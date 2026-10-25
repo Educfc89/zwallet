@@ -3,7 +3,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#0B0F0E"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="zwallet Demo"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="../icons/favicon.png"><link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
-<style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}@media (min-width:700px){html:not([data-tabs="bottom"]) .tabs{flex-wrap:wrap;overflow-x:visible}}</style>
 <script>
 (function () {
   var ZW = window.ZW = window.ZW || {};
@@ -1706,7 +1706,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       '</div><p class="note" style="margin-top:12px">Suma de las personas: ' + fmt(sum) + (sum === state.budget ? ", igual al del grupo." : ", el del grupo es " + fmt(state.budget) + ".") + "</p></section>" : "";
     var reset = '<section class="card"><h2>Restablecer ajustes</h2><p class="sec-sub">Vuelve a los valores por defecto: una sola persona, país y moneda, cotización, recargo, presupuestos, tipo de reparto y categorías. Las categorías que creaste se conservan. No borra gastos, ingresos, tarjetas ni personas.</p>' +
       (ui.confirmReset ? '<div class="result" role="alert">¿Seguro que quieres restablecer los ajustes? Tus datos no se tocan.</div><div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-act="reset-do">Sí, restablecer</button><button class="btn" type="button" data-act="reset-cancel">Cancelar</button></div>' : '<div class="actions"><button class="btn" type="button" data-act="reset-ask">Restablecer ajustes predeterminados</button></div>') + "</section>";
-    return statusP() + sheetCard() + verCard() + snapCard() + layoutCard() + ordCard() +
+    return statusP() + sheetCard() + snapCard() + layoutCard() + ordCard() +
       '<section class="card"><h2>¿Quién lleva las cuentas?</h2><p class="sec-sub">Por defecto es una sola persona. Si son dos, tres o más, se activan Dividir, el reparto de gastos, el presupuesto por persona y los consejos para el grupo.</p>' + modeChips() +
       (dos() ? '<div class="actions" style="margin-top:12px"><button class="btn small" type="button" data-go="dividir">Ponerles nombre o agregar personas</button></div>' : "") + "</section>" +
       '<section class="card"><h2>País y moneda</h2><p class="sec-sub">Elige tu país y la moneda en la que llevas tus cuentas.</p><div class="form" style="margin-top:14px"><div class="field"><label for="s-country">País</label>' + sel("s-country", COUNTRIES.map(function (c) { return [c.id, c.name]; }), state.country) + '</div><div class="field"><label for="s-cur">Moneda</label>' + sel("s-cur", CURRENCIES.map(function (c) { return [c.id, c.id + " · " + c.name]; }), state.cur) + "</div>" +
@@ -1716,7 +1716,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       '<p class="note" style="margin-top:12px">' + (conv() ? "Con Argentina y pesos, cada monto muestra también su equivalente en dólares con la cotización que escribas (en el prototipo no se consulta en vivo). Los gastos cargados en USD se pasan a pesos con ese valor y el recargo indicado." : "Los montos se muestran solo en " + esc(state.cur) + " para " + esc(cntr.name) + ".") + " Cambiar la moneda no convierte los montos ya cargados, solo el símbolo.</p></section>" + pbs +
       '<div class="grid2"><section class="card"><h2>Tarjetas y medios de pago</h2><p class="sec-sub">Ahora tienen su propia pestaña: ahí las ves con su gasto del mes, fechas de cierre y vencimiento, y puedes agregar, editar o eliminar.</p><div class="actions"><button class="btn" type="button" data-go="tarjetas">Ir a Tarjetas</button></div></section>' +
       '<section class="card"><h2>Categorías</h2><p class="sec-sub">Son las de tu Excel de balance. Puedes quitar las que no uses o sumar las tuyas.</p><div class="tagchips">' + cats + "</div>" +
-      '<form class="form" data-form="categoria" novalidate style="grid-template-columns:1fr auto;align-items:end"><div class="field"><label for="c-name">Nueva categoría</label><input id="c-name" name="name" autocomplete="off" maxlength="30" placeholder="Ej: Gimnasio"></div><button class="btn primary" type="submit">Agregar</button></form></section></div>' + reset + permCard();
+      '<form class="form" data-form="categoria" novalidate style="grid-template-columns:1fr auto;align-items:end"><div class="field"><label for="c-name">Nueva categoría</label><input id="c-name" name="name" autocomplete="off" maxlength="30" placeholder="Ej: Gimnasio"></div><button class="btn primary" type="submit">Agregar</button></form></section></div>' + reset + permCard() + verCard();
   }
 
   /* ---------- Bienvenida obligatoria ---------- */
