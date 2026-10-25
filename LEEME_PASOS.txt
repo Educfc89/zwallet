@@ -1,0 +1,45 @@
+ZWALLET en GitHub Pages + Firebase (v27) — PASOS (unos 15 minutos)
+
+CONTENIDO
+  index.html ........ la app real (login + datos en Firebase)
+  demo/ ............. versión de prueba con datos inventados (sin login)
+  firebase-config.js  aquí pegas tus datos de Firebase
+  firestore.rules ... quién puede entrar (tú y Zaydi)
+  zwallet_datos.json  tus datos actuales (1036 gastos, 35 ingresos, ajustes). NO lo subas a GitHub.
+  manifest, sw.js, icons/ ... hacen que sea instalable con icono
+
+1) FIREBASE (console.firebase.google.com, con tu cuenta Google)
+  a. Agregar proyecto → nombre "zwallet" → sin Analytics.
+  b. Compilación → Authentication → Comenzar → "Correo electrónico/contraseña" → Habilitar.
+  c. Compilación → Firestore Database → Crear base de datos → modo producción → región southamerica-east1 (São Paulo).
+  d. Firestore → pestaña Reglas → borra todo, pega el contenido de firestore.rules, CAMBIA CORREO_DE_ZAYDI@gmail.com por el correo real de Zaydi → Publicar.
+  e. Configuración del proyecto (rueda) → Tus apps → icono web </> → registra la app "zwallet" → copia apiKey, authDomain, projectId, appId.
+  f. Abre firebase-config.js y pega esos 4 valores.
+
+2) GITHUB (usuario Educfc89)
+  a. Crea un repositorio nuevo llamado zwallet (público; Pages gratis lo requiere).
+  b. Sube TODO el contenido de esta carpeta MENOS zwallet_datos.json (Add file → Upload files).
+  c. Settings → Pages → Source: "Deploy from a branch" → rama main, carpeta / (root) → Save.
+  d. En 1–2 minutos queda en: https://educfc89.github.io/zwallet/
+     Demo: https://educfc89.github.io/zwallet/demo/
+  e. Firebase → Authentication → Configuración → Dominios autorizados → agrega educfc89.github.io
+
+3) PRIMER USO
+  a. Abre la dirección → "Crear mi cuenta (primera vez)" con tu correo y una contraseña. Zaydi hace lo mismo con SU correo (el de las reglas).
+  b. Ajustes → "Importar datos" → elige zwallet_datos.json (solo una vez). Verás los 1036 gastos.
+  c. Instalar: Android Chrome → menú → "Instalar app"; iPhone Safari → Compartir → "Agregar a inicio"; PC → icono de instalar en la barra de direcciones.
+
+4) GOOGLE SHEET (Balance Mensual) — puente para traer/enviar datos y editar la configuración
+  a. En el Sheet: Extensiones → Apps Script → borra lo que haya, pega script_sheet/Code.gs (y guarda).
+  b. Recarga el Sheet: aparece el menú "zwallet". Menú zwallet → "Preparar hojas": crea zwallet_Config (con el TOKEN), zwallet_Diagnóstico y zwallet_Instrucciones. Acepta los permisos de Google.
+  c. Implementar → Nueva implementación → Aplicación web → Ejecutar como: yo → Acceso: Cualquier persona → Implementar. Copia la dirección que termina en /exec.
+  d. En zwallet → Ajustes → "Google Sheet": pega la dirección y el token (hoja zwallet_Config, celda B6) → Guardar conexión. Queda guardado para Zaydi también.
+  e. Usos: "Actualizar desde el Sheet" (trae cambios de la pestaña del mes más reciente) · "Crear hoja de <mes>" (crea/reemplaza la pestaña "zwallet <mes>" en tu Sheet) · "Enviar/Traer configuración" (ajustes, tarjetas y categorías en zwallet_Config; en ID pon (nueva) para agregar filas).
+  f. Si algo falla mira zwallet_Diagnóstico o menú zwallet → Probar conexión. Si cambias el código: Implementar → Administrar implementaciones → Nueva versión.
+  Nota: el Sheet usado es el Balance Mensual al que pegues el script (la app ya no necesita el ID).
+
+NOTAS
+  - Hay una sola base: lo que cambies tú lo ve Zaydi al instante, en web o en la app instalada.
+  - Excel sigue funcionando igual.
+  - Para actualizar la app más adelante: reemplaza index.html en el repo (Add file → Upload) y espera 1 minuto.
+  - Si quieres que el repo sea privado: Pages privado requiere plan de pago; alternativa: Firebase Hosting (gratis).

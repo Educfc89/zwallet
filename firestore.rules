@@ -1,0 +1,13 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Solo entran Eduardo y Zaydi (correos ya verificados por Google/Firebase al iniciar sesión).
+    function permitido() {
+      return request.auth != null
+        && request.auth.token.email in ["eduardocarpio89@gmail.com", "CORREO_DE_ZAYDI@gmail.com"];
+    }
+    match /{document=**} {
+      allow read, write: if permitido();
+    }
+  }
+}
