@@ -68,6 +68,15 @@
   }
   ZW.onAction = function (a) {
     if (a === "out" && AUTH) AUTH.signOut().then(function () { location.reload(); });
+
+    if (a === "export") {
+      var out = {}, cols = ["tx", "inc", "pays", "events"], done = 0, m = document.getElementById("ghimp");
+      if (m) m.textContent = "Preparando respaldo…";
+      Promise.all(cols.map(function (c) { return DB.collection(c).get().then(function (sn) { out[c] = {}; sn.docs.forEach(function (d) { out[c][d.id] = d.data(); }); }); }).concat([DB.doc("casa/meta").get().then(function (d) { if (d.exists) out["casa/meta"] = d.data(); })]))
+        .then(function () { var d = new Date(), z = function (n) { return (n < 10 ? "0" : "") + n; }; return saveFile({ filename: "zwallet_respaldo_" + d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate()) + ".json", data: JSON.stringify(out) }); })
+        .then(function () { var o = document.getElementById("ghimp"); if (o) o.textContent = "Respaldo descargado."; }, function (e) { var o = document.getElementById("ghimp"); if (o) o.textContent = "No se pudo: " + (e && e.message || e); });
+      return;
+    }
     if (a === "import") {
       var f = document.createElement("input"); f.type = "file"; f.accept = ".json,application/json";
       f.onchange = function () {
@@ -1599,7 +1608,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var acc = window.ZW && window.ZW.email ? '<p class="note">Sesión iniciada como <b>' + esc(window.ZW.email) + '</b>. Los dos ven los mismos datos al instante.</p><div class="actions"><button class="btn" type="button" data-gh="out">Cerrar sesión</button></div>' : '<p class="note">Modo de prueba: nada se guarda en la nube.</p>';
     return '<section class="card"><h2>Cuenta e instalación</h2>' + acc +
       '<p class="label" style="margin-top:14px">Instalar zwallet como app</p><p class="note" id="ghinst">' + ((window.ZW && window.ZW.installHint) || "") + '</p><div class="actions"><button class="btn primary" type="button" data-gh="install">Instalar app</button></div>' +
-      (window.ZW && window.ZW.email ? '<p class="label" style="margin-top:14px">Importar datos</p><p class="note">Sube el archivo zwallet_datos.json solo una vez, cuando la base esté vacía. Si ya hay datos, se reemplazan los que tengan el mismo identificador.</p><div class="actions"><button class="btn" type="button" data-gh="import">Elegir zwallet_datos.json</button></div><p class="note" id="ghimp"></p>' : "") + '</section>';
+      (window.ZW && window.ZW.email ? '<p class="label" style="margin-top:14px">Importar datos</p><p class="note">Sube el archivo zwallet_datos.json solo una vez, cuando la base esté vacía. Si ya hay datos, se reemplazan los que tengan el mismo identificador.</p><div class="actions"><button class="btn" type="button" data-gh="import">Elegir zwallet_datos.json</button><button class="btn" type="button" data-gh="export">Exportar respaldo JSON</button></div><p class="note" id="ghimp"></p>' : "") + '</section>';
   }
   if (!ui.sel) { ui.sel = {}; ui.selMode = false; ui.selAsk = false; }
   function selCount() { return Object.keys(ui.sel).length; }
