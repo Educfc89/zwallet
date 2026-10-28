@@ -57,6 +57,8 @@
 .vcrow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .vcin { flex: 1 1 200px; min-width: 0; font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); box-sizing: border-box; }
 .vcmic { white-space: nowrap; }
+.tutline { display: flex; justify-content: flex-end; margin: 0 0 10px; }
+.tutrow { display: flex; justify-content: flex-end; margin: 0 0 8px; }
 </style>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script>
 <script>
@@ -578,7 +580,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v29</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v31</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -1012,7 +1014,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var first = enabledCards()[0];
     var d = t || { amt: "", desc: "", cat: "mercado", card: first ? first.id : "", date: defaultDate(k), split: allIds(), inst: null, usd: null, note: "" };
     var c0 = cardOf(d.card), credit0 = c0 && c0.kind === "Crédito";
-    var off = t ? mDiff(t.date.slice(0, 7), t.pm) : (credit0 ? 1 : 0), offs = [-1, 0, 1];
+    var off = t ? mDiff(t.date.slice(0, 7), t.pm) : mDiff(d.date.slice(0, 7), shiftKey(CUR_KEY, 1)), offs = [-1, 0, 1];
     if (offs.indexOf(off) < 0) offs.push(off);
     var inst = d.inst || { n: 1, free: true, rate: "" }, spl = splitOf(d), amtVal = d.usd != null ? d.usd : d.amt;
     var own = spl.length === state.people.length ? "ambos" : (spl.length === 1 ? spl[0] : "ambos");
@@ -1680,7 +1682,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     }).join("");
     var gl = rsGroups(r).map(function (G) { return "<li><b>" + esc(G.name) + "</b> · " + G.people.length + " persona" + (G.people.length === 1 ? "" : "s") + "</li>"; }).join("");
     return '<section class="card"><h2>Personas y núcleos familiares</h2><p class="sec-sub">Escribe el nombre de cada persona y elige a qué núcleo pertenece (por ejemplo, cada pareja es un núcleo). Cada núcleo paga junto.</p>' +
-      '<div class="actions"><button class="btn small" type="button" data-rs="pairs">Agrupar en parejas</button><button class="btn small" type="button" data-rs="solo">Cada uno por separado</button><button class="btn small" type="button" data-rs="padd">+ Agregar persona</button><button class="btn small" type="button" data-rs="pdel"' + (n > 2 ? "" : " disabled") + '>− Quitar la última</button></div>' +
+      '<div class="vcbox"><b>Opción 1 · Por núcleos familiares</b><p class="note">Escribe cuántas personas tiene cada núcleo, separado por comas. Ejemplo: <b>5,1</b> = una familia de 5 que paga todo junta y una persona sola que paga solo lo suyo. (Si la suma no es igual a las personas, se ajusta la lista.)</p><div class="vcrow"><input id="rs-sizes" class="vcin" inputmode="numeric" autocomplete="off" placeholder="Ej: 5,1" value="' + esc(rsGroups(r).map(function (G) { return G.people.length; }).join(",")) + '"><button class="btn primary small" type="button" data-rs="sizes">Aplicar núcleos</button></div></div>' +
+      '<div class="vcbox"><b>Opción 2 · Cada uno por separado</b><p class="note">Cada persona paga solo lo que consumió.</p><div class="actions"><button class="btn small" type="button" data-rs="solo">Cada uno por separado</button></div></div>' +
+      '<div class="actions"><button class="btn small" type="button" data-rs="pairs">Agrupar en parejas</button><button class="btn small" type="button" data-rs="padd">+ Agregar persona</button><button class="btn small" type="button" data-rs="pdel"' + (n > 2 ? "" : " disabled") + '>− Quitar la última</button></div>' +
       '<div class="rslist">' + rows + '</div><h3 style="margin-top:16px">Núcleos (' + rsGroups(r).length + ')</h3><ul class="steplist">' + gl + '</ul>' +
       '<div class="field" style="max-width:220px;margin-top:12px"><label for="rs-tipf">Propina %</label><input id="rs-tipf" type="number" min="0" max="100" step="0.5" inputmode="decimal" value="' + esc(String(r.tip)) + '" data-rsf="tip"></div><p class="note">La propina se reparte según lo que consumió cada núcleo. Siempre arranca en tu valor habitual y puedes cambiarla.</p>' +
       '<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-rs="stage:order">Continuar al pedido →</button></div></section>';
@@ -1754,6 +1758,14 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (a === "delno") { RS.del = false; render(); return; }
     if (a === "delyes") { state.events = state.events.filter(function (x) { return x.id !== ev.id; }); RS.del = false; ui.ev = null; render(); return; }
     if (p[0] === "stage") { if (p[1] === "closed" && !r.lines.length) { RS.msg = ""; r.stage = "order"; RS.msg = "Anota al menos un plato antes de cerrar."; } else r.stage = p[1]; render(); window.scrollTo(0, 0); return; }
+    if (a === "sizes") {
+      var sz = ($("rs-sizes").value || "").split(/[^0-9]+/).map(function (x) { return +x; }).filter(function (x) { return x > 0; }), tot = sz.reduce(function (x, y) { return x + y; }, 0);
+      if (!sz.length || tot > 40) { RS.msg = "Escribe los tamaños así: 5,1"; render(); return; }
+      while (r.people.length < tot) r.people.push({ id: rsId(), name: "Persona " + (r.people.length + 1), alias: "", g: 1 });
+      while (r.people.length > tot) r.people.pop();
+      var ix = 0; sz.forEach(function (c2, gi) { for (var q = 0; q < c2; q++) r.people[ix++].g = gi + 1; });
+      RS.msg = ""; render(); return;
+    }
     if (a === "pairs") { r.people.forEach(function (x, i) { x.g = Math.floor(i / 2) + 1; }); render(); return; }
     if (a === "solo") { r.people.forEach(function (x, i) { x.g = i + 1; }); render(); return; }
     if (a === "padd") { if (r.people.length < 40) r.people.push({ id: rsId(), name: "Persona " + (r.people.length + 1), alias: "", g: r.people.length + 1 }); render(); return; }
@@ -1801,6 +1813,15 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (!mv.length) return;
     lines = mv.map(function (m) { return "• " + nm(m.from) + " le paga a " + nm(m.to) + ": $ " + fmt(m.amt).replace(/^\$\s?/, "") + (al(m.to) ? " (alias " + al(m.to) + ")" : ""); });
     shareText("💸 " + title + "\n" + lines.join("\n"));
+  });
+
+  /* ----- Botón de tutorial en cada sección ----- */
+  var TUTMAP = { inicio: "Así funciona", anio: "Meses, consejos", consejos: "Meses, consejos", gastos: "Agrega un gasto", cuotas: "Compras en cuotas", tarjetas: "Agrega tus tarjetas", ingresos: "Registra los ingresos", dividir: "Quién le debe", eventos: "Eventos", calc: "Así funciona", ajustes: "Elige cómo" };
+  function tutIdx(tab) { var key = TUTMAP[tab]; if (tab === "eventos" && ui.ev) { var e0 = evOf(ui.ev); if (e0 && e0.kind === "rest") key = "Cuenta de restaurante"; } for (var i = 0; i < STEPS.length; i++) if (key && STEPS[i].t.indexOf(key) === 0) return i; return 0; }
+  function tutBtn() { return ui.tab === "tutorial" ? "" : '<div class="tutrow"><button class="btn small" type="button" data-tut="1">❓ Tutorial de esta sección</button></div>'; }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-tut]"); if (!b) return;
+    var i = tutIdx(ui.tab); ui.tab = "tutorial"; ui.step = i; ui.form = ""; ui.edit = null; render(); window.scrollTo(0, 0);
   });
 
   /* ----- Dictar un gasto: intérprete de la frase (sin IA, solo reglas) ----- */
@@ -1997,8 +2018,10 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v29";
+  var APP_VERSION = "v31";
   var CHANGELOG = [
+    ["v31", "Botón de tutorial en cada sección. Restaurante: núcleos por cantidad de personas (ej. 5,1)."],
+    ["v30", ""Para pagar en" arranca siempre en el mes siguiente (noviembre; en diciembre pasa a diciembre). Lo puedes cambiar."],
     ["v29", "Dictar gastos por voz (o escribiendo una frase): monto, descripción, tarjeta, de quién y fecha se completan solos."],
     ["v28", "Eventos: cuenta de restaurante por núcleos con propina, registrar mi parte y compartir. Gastos en tabla ordenable. Compartir lo que se debe con alias."],
     ["v27", "App web instalable (GitHub + Firebase) con puente al Google Sheet: traer cambios, enviar el mes y configuración desde el Sheet."],
@@ -2378,7 +2401,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   function render() {
     if (ui.tab === "dividir" && !dos()) ui.tab = "inicio";
     $("tabs").innerHTML = tabsOrdered().filter(function (t) { return t[0] !== "dividir" || dos(); }).map(function (t) { return '<button class="tab" type="button" data-tab="' + t[0] + '"' + (ui.tab === t[0] ? ' aria-current="page"' : "") + ">" + tabIcon(t[0]) + t[1] + "</button>"; }).join("");
-    $("screen").innerHTML = VIEWS[ui.tab]();
+    $("screen").innerHTML = tutBtn() + VIEWS[ui.tab]();
     if (ui.form === "cierre") { $("screen").innerHTML = '<section class="card" id="form-card">' + closeForm() + "</section>"; }
     else if (ui.form || ui.evform) {
       var af = $("screen").querySelector('form[data-form="gasto"],form[data-form="ingreso"],form[data-form="tarjeta"],form[data-form="evento"],form[data-form="evitem"]');
@@ -2448,7 +2471,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       $("part2-wrap").hidden = !$("f-card2").value;
       $("rate-wrap").hidden = !isCredit || $("f-free").checked || +$("f-n").value <= 1;
       var date = $("f-fecha").value;
-      if (!ui.pmTouched && !(ui.edit && ui.edit.kind === "gasto")) { var r = document.querySelector('input[name="pm"][value="' + (isCredit ? 1 : 0) + '"]'); if (r) r.checked = true; }
+      if (!ui.pmTouched && !(ui.edit && ui.edit.kind === "gasto")) { var r = document.querySelector('input[name="pm"][value="' + (dateOk(date) ? mDiff(date.slice(0, 7), shiftKey(CUR_KEY, 1)) : 1) + '"]'); if (r) r.checked = true; }
       if (dateOk(date)) document.querySelectorAll("#pm-segs span[data-off]").forEach(function (sp) { sp.textContent = pmText(date, +sp.getAttribute("data-off")); });
       var L = $("f-monto-l"), cur = document.querySelector('input[name="cur"]:checked');
       if (L && cur) L.textContent = cur.value === "usd" ? "Monto en dólares (USD)" : "Monto";
