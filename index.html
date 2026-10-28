@@ -696,7 +696,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v36</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v37</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -1315,8 +1315,8 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     return norm([t.desc, catOf(t.cat).name, cardLabel(t), t.note || "", String(o).replace(/<[^>]*>/g, ""), String(Math.round(am)), String(am), numFmt(am), ddmm(c.date), c.date, c.label ? "cuota " + c.label : ""].join(" "));
   }
   function gvBase(T) {
-    var src = T.list;
-    if (GV.q && GV.all) { src = []; monthKeys().forEach(function (m) { totals(m).list.forEach(function (c) { src.push(c); }); }); }
+    var src = T.list.map(function (c) { c.pk = ui.monthKey; return c; });
+    if (GV.q && GV.all) { src = []; monthKeys().forEach(function (m) { totals(m).list.forEach(function (c) { c.pk = m; src.push(c); }); }); }
     var words = norm(GV.q || "").split(/\s+/).filter(Boolean);
     return src.filter(function (c) { return (!ui.filter || c.t.cat === ui.filter) && words.every(function (w) { return gvHay(c).indexOf(w) >= 0; }); });
   }
@@ -1334,9 +1334,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       var th = function (key, label, cls) { return '<th class="' + (cls || "") + '"><button type="button" class="thb" data-gsort="' + key + '">' + label + gvArrow(key) + "</button></th>"; };
       var trs = list.length ? list.map(function (c) {
         var t = c.t, cat = catOf(t.cat), nextPay = t.pm > CUR_KEY, on = !!ui.sel[t.id];
-        return '<tr' + (on ? ' class="on"' : "") + '><td class="ck"><input type="checkbox" data-sel="' + t.id + '" aria-label="Marcar ' + esc(t.desc) + '"' + (on ? " checked" : "") + '></td><td class="num">' + ddmm(c.date) + '</td><td class="gd"><b>' + esc(t.desc) + "</b>" + (c.label ? ' <span class="badge">cuota ' + c.label + "</span>" : "") + (nextPay ? ' <span class="badge next">Próximo</span>' : "") + (t.usd != null ? ' <span class="badge">USD ' + t.usd + "</span>" : "") + '</td><td><span class="gcat"><i class="dot" style="background:' + colorOf(cat) + '"></i>' + esc(cat.name) + "</span></td><td>" + esc(cardLabel(t)) + "</td>" + (dos() ? "<td>" + esc(ownerLabel(t)) + "</td>" : "") + '<td class="num r">' + fmt2(c.amt) + '</td><td class="ac"><button class="iconbtn x" type="button" data-edit="' + t.id + '" aria-label="Editar ' + esc(t.desc) + '">' + IEDIT + '</button><button class="iconbtn x" type="button" data-del="' + t.id + '" aria-label="Eliminar ' + esc(t.desc) + '">' + IX + "</button></td></tr>";
-      }).join("") : '<tr><td colspan="8" class="empty">No hay movimientos para mostrar.</td></tr>';
-      body = '<div class="gtwrap"><table class="gtbl"><thead><tr><th class="ck"><input type="checkbox" data-gall="1" aria-label="Marcar todos"' + (allOn ? " checked" : "") + '></th>' + th("date", "Fecha") + th("desc", "Descripción") + th("cat", "Tipo de gasto") + th("card", "Tarjeta") + (dos() ? "<th>De quién</th>" : "") + th("amt", "Monto", "r") + '<th></th></tr></thead><tbody>' + trs + '</tbody><tfoot><tr><td></td><td colspan="' + (dos() ? 5 : 4) + '">' + (nsel ? nsel + " marcado" + (nsel === 1 ? "" : "s") + ": " : "Total: " + list.length + " movimientos") + '</td><td class="num r">' + fmt2(nsel ? selSum : sum) + "</td><td></td></tr></tfoot></table></div>";
+        return '<tr' + (on ? ' class="on"' : "") + '><td class="ck"><input type="checkbox" data-sel="' + t.id + '" aria-label="Marcar ' + esc(t.desc) + '"' + (on ? " checked" : "") + '></td><td class="num">' + ddmm(c.date) + '</td><td class="gpk">' + esc(monthLabel(c.pk)) + '</td><td class="gd"><b>' + esc(t.desc) + "</b>" + (c.label ? ' <span class="badge">cuota ' + c.label + "</span>" : "") + (nextPay ? ' <span class="badge next">Próximo</span>' : "") + (t.usd != null ? ' <span class="badge">USD ' + t.usd + "</span>" : "") + '</td><td><span class="gcat"><i class="dot" style="background:' + colorOf(cat) + '"></i>' + esc(cat.name) + "</span></td><td>" + esc(cardLabel(t)) + "</td>" + (dos() ? "<td>" + esc(ownerLabel(t)) + "</td>" : "") + '<td class="num r">' + fmt2(c.amt) + '</td><td class="ac"><button class="iconbtn x" type="button" data-edit="' + t.id + '" aria-label="Editar ' + esc(t.desc) + '">' + IEDIT + '</button><button class="iconbtn x" type="button" data-del="' + t.id + '" aria-label="Eliminar ' + esc(t.desc) + '">' + IX + "</button></td></tr>";
+      }).join("") : '<tr><td colspan="9" class="empty">No hay movimientos para mostrar.</td></tr>';
+      body = '<div class="gtwrap"><table class="gtbl"><thead><tr><th class="ck"><input type="checkbox" data-gall="1" aria-label="Marcar todos"' + (allOn ? " checked" : "") + '></th>' + th("date", "Fecha") + "<th>Se paga en</th>" + th("desc", "Descripción") + th("cat", "Tipo de gasto") + th("card", "Tarjeta") + (dos() ? "<th>De quién</th>" : "") + th("amt", "Monto", "r") + '<th></th></tr></thead><tbody>' + trs + '</tbody><tfoot><tr><td></td><td colspan="' + (dos() ? 6 : 5) + '">' + (nsel ? nsel + " marcado" + (nsel === 1 ? "" : "s") + ": " : "Total: " + list.length + " movimientos") + '</td><td class="num r">' + fmt2(nsel ? selSum : sum) + "</td><td></td></tr></tfoot></table></div>";
     } else {
       var rows = list.length ? list.map(function (c) {
         var t = c.t, cat = catOf(t.cat), nextPay = t.pm > CUR_KEY;
@@ -2194,8 +2194,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v36";
+  var APP_VERSION = "v37";
   var CHANGELOG = [
+    ["v37", "Gastos: columna Se paga en, para ver en que mes se paga cada gasto."],
     ["v36", "Gastos: buscador (nombre, tarjeta, tipo, monto, fecha) en este mes o en todos."],
     ["v35", "Avisos: al registrar un gasto o evento, aviso en la app, en el navegador y por correo a los dos."],
     ["v34", "Gastos: los montos de la tabla se ven con 2 decimales."],
