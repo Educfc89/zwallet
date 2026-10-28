@@ -471,7 +471,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v32</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v33</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -579,6 +579,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
   function numFmt(n) { if (n === "" || n == null || isNaN(n)) return ""; return Number(n).toLocaleString("es-AR", { maximumFractionDigits: 2 }); }
   function maskMoney(el) {
+    if (/^\d+\.\d{1,2}$/.test(el.value)) el.value = el.value.replace(".", ",");
     var v = el.value, pos = el.selectionStart == null ? v.length : el.selectionStart, left = v.slice(0, pos).replace(/[^\d,]/g, "").length;
     var clean = v.replace(/[^\d,]/g, ""), ci = clean.indexOf(","), ip = ci >= 0 ? clean.slice(0, ci) : clean, dp = ci >= 0 ? clean.slice(ci + 1).replace(/,/g, "").slice(0, 2) : null;
     ip = ip.replace(/^0+(?=\d)/, "");
@@ -587,6 +588,16 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var cnt = 0, np = 0; for (; np < out.length && cnt < left; np++) { if (/[\d,]/.test(out.charAt(np))) cnt++; }
     try { el.setSelectionRange(np, np); } catch (e) {}
   }
+  document.addEventListener("keydown", function (e) {
+    var t = e.target;
+    if (e.key !== "." || e.ctrlKey || e.metaKey || e.altKey || !t || !t.hasAttribute || !t.hasAttribute("data-money")) return;
+    e.preventDefault();
+    if (t.value.indexOf(",") >= 0) return;
+    var a = t.selectionStart == null ? t.value.length : t.selectionStart, b = t.selectionEnd == null ? a : t.selectionEnd;
+    t.value = t.value.slice(0, a) + "," + t.value.slice(b);
+    try { t.setSelectionRange(a + 1, a + 1); } catch (x) {}
+    maskMoney(t); t.dispatchEvent(new Event("input", { bubbles: true }));
+  });
   function parseAmount(raw) {
     var s = String(raw).replace(/[\s$]/g, "");
     if (!s) return NaN;
@@ -1930,8 +1941,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v32";
+  var APP_VERSION = "v33";
   var CHANGELOG = [
+    ["v33", "Decimales con punto o coma."],
     ["v32", "Tutorial simple por sección."],
     ["v31", "Tutorial por sección y núcleos por cantidad."],
     ["v30", "Para pagar en: mes siguiente por defecto."],
