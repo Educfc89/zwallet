@@ -25,6 +25,9 @@
 .gtbl tfoot td { font-weight: 700; border-bottom: 0; background: color-mix(in srgb, var(--surface) 92%, var(--bg)); }
 .gcat { display: inline-flex; align-items: center; gap: 7px; }
 .gtbl .ac .iconbtn { display: inline-flex; vertical-align: middle; }
+
+.gsearch { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin: 12px 0 4px; }
+.gsearch input[type=search] { flex: 1 1 260px; min-width: 0; font: inherit; padding: 10px 12px; border-radius: 12px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); box-sizing: border-box; }
 .rslist { display: grid; gap: 8px; margin-top: 12px; }
 .rsrow { display: grid; grid-template-columns: 28px minmax(0,1.2fr) minmax(0,.9fr) minmax(0,1fr); gap: 8px; align-items: center; }
 .rsrow input, .rsrow select { font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-width: 0; width: 100%; box-sizing: border-box; }
@@ -471,7 +474,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v35</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v36</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -1065,7 +1068,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
   /* ----- Gastos ----- */
   function fmt2(n) { try { return new Intl.NumberFormat("es-AR", { style: "currency", currency: state.cur, minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(n); } catch (e) { return fmt(n); } }
-  var GV = { view: null, key: "recent", dir: "desc" };
+  var GV = { view: null, key: "recent", dir: "desc", q: "", all: false };
   (function () { try { var v = window.localStorage.getItem("pw_gview_v1"); if (v === "tabla" || v === "lista") GV.view = v; var s = JSON.parse(window.localStorage.getItem("pw_gsort_v1") || "null"); if (s && s.key) { GV.key = s.key; GV.dir = s.dir === "asc" ? "asc" : "desc"; } } catch (e) {} })();
   function gvView() { return GV.view || (window.innerWidth >= 760 ? "tabla" : "lista"); }
   function gvSave() { try { window.localStorage.setItem("pw_gview_v1", GV.view || gvView()); window.localStorage.setItem("pw_gsort_v1", JSON.stringify({ key: GV.key, dir: GV.dir })); } catch (e) {} }
@@ -1085,10 +1088,21 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (k === "recent") return list.sort(function (a, b) { var d = state.tx.indexOf(b.t) - state.tx.indexOf(a.t); if (GV.dir === "asc") d = -d; return d || (a.date < b.date ? 1 : a.date > b.date ? -1 : 0); });
     return list.sort(cmp);
   }
+  function gvHay(c) {
+    var t = c.t, am = c.amt, o = "";
+    try { o = ownerLabel(t); } catch (e) {}
+    return norm([t.desc, catOf(t.cat).name, cardLabel(t), t.note || "", String(o).replace(/<[^>]*>/g, ""), String(Math.round(am)), String(am), numFmt(am), ddmm(c.date), c.date, c.label ? "cuota " + c.label : ""].join(" "));
+  }
+  function gvBase(T) {
+    var src = T.list;
+    if (GV.q && GV.all) { src = []; monthKeys().forEach(function (m) { totals(m).list.forEach(function (c) { src.push(c); }); }); }
+    var words = norm(GV.q || "").split(/\s+/).filter(Boolean);
+    return src.filter(function (c) { return (!ui.filter || c.t.cat === ui.filter) && words.every(function (w) { return gvHay(c).indexOf(w) >= 0; }); });
+  }
   function gvArrow(k) { return GV.key === k ? (GV.dir === "asc" ? " ▲" : " ▼") : ""; }
   function viewGastos() {
     var k = ui.monthKey, T = totals(k), tbl = gvView() === "tabla";
-    var list = gvSorted(T.list.filter(function (c) { return !ui.filter || c.t.cat === ui.filter; }));
+    var list = gvSorted(gvBase(T));
     var sum = list.reduce(function (s, c) { return s + c.amt; }, 0);
     var present = catsAZ().filter(function (c) { return T.by[c.id] || c.id === ui.filter; });
     var chips = '<button class="chip" type="button" data-cat="" aria-pressed="' + (ui.filter === "") + '">Todas</button>' + present.map(function (c) { return '<button class="chip" type="button" data-cat="' + c.id + '" aria-pressed="' + (ui.filter === c.id) + '"><i class="dot" style="background:' + colorOf(c) + '"></i>' + esc(c.name) + "</button>"; }).join("");
@@ -1109,9 +1123,10 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       }).join("") : '<li class="empty">No hay movimientos para mostrar.</li>';
       body = '<ul class="list' + (ui.selMode ? " selmode" : "") + '">' + rows + "</ul>";
     }
+    var srch = '<div class="gsearch"><input id="g-q" type="search" data-gq="1" autocomplete="off" placeholder="🔍 Buscar gasto: nombre, tarjeta, tipo, monto o fecha…" aria-label="Buscar gasto" value="' + esc(GV.q) + '"><label class="gsl"><input type="checkbox" data-gqall="1"' + (GV.all ? " checked" : "") + '> Buscar en todos los meses</label>' + (GV.q ? '<button class="btn small" type="button" data-gqclear="1">Limpiar</button>' : "") + '</div>';
     var ctl = '<div class="gctl"><div class="segs" role="group" aria-label="Vista"><button type="button" class="chip" data-gview="tabla" aria-pressed="' + tbl + '">Tabla</button><button type="button" class="chip" data-gview="lista" aria-pressed="' + !tbl + '">Lista</button></div><label class="gsl">Ordenar por <select data-gsortsel="1">' + GSORTS.map(function (s) { return '<option value="' + s[0] + '"' + (GV.key === s[0] ? " selected" : "") + ">" + s[1] + "</option>"; }).join("") + '</select></label><button type="button" class="btn small" data-gdir="1" aria-label="Invertir orden">' + (GV.dir === "asc" ? "Menor a mayor ▲" : "Mayor a menor ▼") + "</button></div>";
-    return '<section class="card"><div class="sec-head"><div><h2>Gastos de ' + esc(monthName(k)) + '</h2><p class="sec-sub">' + list.length + " movimientos a pagar este mes, total " + fmt2(sum) + (conv() ? " (≈ " + usd(sum) + ")" : "") + '.</p></div><div class="actions"><button class="btn primary" type="button" data-act="add-gasto">' + IPLUS + "Agregar gasto</button>" + '<button class="btn" type="button" data-vc="open">🎤 Dictar</button>' + (tbl ? "" : '<button class="btn" type="button" data-act="sel:toggle">' + (ui.selMode ? "Salir de seleccionar" : "Seleccionar") + "</button>") + xlsxBtn() + "</div></div>" +
-      '<div style="margin-top:14px">' + monthbar("") + "</div></section>" + formCard() + '<section class="card"><div class="chips" style="margin-top:0">' + chips + "</div>" + ctl + statusP() + (showBar ? selBar(list) : "") + body + "</section>";
+    return '<section class="card"><div class="sec-head"><div><h2>Gastos de ' + esc(monthName(k)) + '</h2><p class="sec-sub">' + list.length + (GV.q ? (list.length === 1 ? " resultado" : " resultados") + (GV.all ? " en todos los meses" : " este mes") : " movimientos a pagar este mes") + ", total " + fmt2(sum) + (conv() ? " (≈ " + usd(sum) + ")" : "") + '.</p></div><div class="actions"><button class="btn primary" type="button" data-act="add-gasto">' + IPLUS + "Agregar gasto</button>" + '<button class="btn" type="button" data-vc="open">🎤 Dictar</button>' + (tbl ? "" : '<button class="btn" type="button" data-act="sel:toggle">' + (ui.selMode ? "Salir de seleccionar" : "Seleccionar") + "</button>") + xlsxBtn() + "</div></div>" +
+      '<div style="margin-top:14px">' + monthbar("") + "</div></section>" + formCard() + '<section class="card"><div class="chips" style="margin-top:0">' + chips + "</div>" + srch + ctl + statusP() + (showBar ? selBar(list) : "") + body + "</section>";
   }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-gsort],[data-gview],[data-gdir],[data-gall]"); if (!b) return;
@@ -1119,13 +1134,27 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (b.hasAttribute("data-gview")) { GV.view = b.getAttribute("data-gview"); gvSave(); render(); return; }
     if (b.hasAttribute("data-gdir")) { GV.dir = GV.dir === "asc" ? "desc" : "asc"; gvSave(); render(); return; }
     if (b.hasAttribute("data-gall")) {
-      var T = totals(ui.monthKey), lst = T.list.filter(function (c) { return !ui.filter || c.t.cat === ui.filter; }), all = lst.length && lst.every(function (c) { return ui.sel[c.t.id]; });
+      var lst = gvBase(totals(ui.monthKey)), all = lst.length && lst.every(function (c) { return ui.sel[c.t.id]; });
       if (all) ui.sel = {}; else lst.forEach(function (c) { ui.sel[c.t.id] = 1; });
       ui.selAsk = false; render();
     }
   });
   document.addEventListener("change", function (e) {
     var t = e.target; if (t && t.hasAttribute && t.hasAttribute("data-gsortsel")) { GV.key = t.value; GV.dir = (GV.key === "date" || GV.key === "amt" || GV.key === "recent") ? "desc" : "asc"; gvSave(); render(); }
+  });
+
+  document.addEventListener("input", function (e) {
+    var t = e.target; if (!t || !t.hasAttribute || !t.hasAttribute("data-gq")) return;
+    var pos = t.selectionStart; GV.q = t.value; render();
+    var n = document.getElementById("g-q"); if (n) { n.focus(); try { n.setSelectionRange(pos, pos); } catch (x) {} }
+  });
+  document.addEventListener("change", function (e) {
+    var t = e.target; if (!t || !t.hasAttribute || !t.hasAttribute("data-gqall")) return;
+    GV.all = t.checked; render();
+  });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-gqclear]"); if (!b) return;
+    GV.q = ""; render(); var n = document.getElementById("g-q"); if (n) n.focus();
   });
 
   /* ----- Cuotas ----- */
@@ -1895,7 +1924,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   var TUT = { sec: "todo" };
   var TSECS = [
     { id: "inicio", n: "Inicio", go: "inicio", what: "Es la pantalla principal: te dice en una mirada cómo vas este mes.", b: ["Arriba ves cuánto has gastado este mes y cuánto te queda.", "Abajo ves en qué se te va la plata (supermercado, comida, servicios…) con gráficos fáciles.", "Con el botón \"Agregar gasto\" anotas algo que pagaste, sin salir de esta pantalla.", "Si algo está en rojo, es una señal de que te estás pasando."] },
-    { id: "gastos", n: "Gastos", go: "gastos", what: "Es la lista de todo lo que pagaste, como un cuaderno de cuentas.", b: ["Toca \"Agregar gasto\", escribe cuánto fue y en qué. La app elige la categoría sola (la puedes cambiar).", "\"Para pagar en\": elige \"Este mes\" si ya lo pagaste, o \"Próximo mes\" si lo vas a pagar después (por ejemplo, con el resumen de la tarjeta). Siempre sale marcado el mes siguiente; lo cambias si quieres.", "Puedes ordenar la lista por fecha, monto o tipo de gasto tocando el título de la columna.", "Para varios gastos a la vez, toca \"Seleccionar\", marca los que quieras y borra o cambia todos juntos.", "El lápiz corrige un gasto; la X lo borra y siempre puedes tocar \"Deshacer\".", "\"Cerrar mes\" pasa al mes siguiente y trae solo los gastos que se repiten (alquiler, servicios, suscripciones).", "\"Descargar Excel\" te baja lo que estás viendo en una planilla."] },
+    { id: "gastos", n: "Gastos", go: "gastos", what: "Es la lista de todo lo que pagaste, como un cuaderno de cuentas.", b: ["Toca \"Agregar gasto\", escribe cuánto fue y en qué. La app elige la categoría sola (la puedes cambiar).", "\"Para pagar en\": elige \"Este mes\" si ya lo pagaste, o \"Próximo mes\" si lo vas a pagar después (por ejemplo, con el resumen de la tarjeta). Siempre sale marcado el mes siguiente; lo cambias si quieres.", "Para encontrar un gasto, escribe en el buscador (nombre, tarjeta, tipo, monto o fecha). Marca \"Buscar en todos los meses\" si no sabes de qué mes era.", "Puedes ordenar la lista por fecha, monto o tipo de gasto tocando el título de la columna.", "Para varios gastos a la vez, toca \"Seleccionar\", marca los que quieras y borra o cambia todos juntos.", "El lápiz corrige un gasto; la X lo borra y siempre puedes tocar \"Deshacer\".", "\"Cerrar mes\" pasa al mes siguiente y trae solo los gastos que se repiten (alquiler, servicios, suscripciones).", "\"Descargar Excel\" te baja lo que estás viendo en una planilla."] },
     { id: "voz", n: "Dictar por voz", go: "gastos:add", what: "En vez de escribir, hablas y la app llena el gasto por ti.", b: ["Toca \"🎤 Dictar\" (o \"Hablar\" dentro de \"Agregar gasto\"). La primera vez el celular pide permiso para el micrófono: dile que sí.", "Di todo en una frase. Por ejemplo: \"gasté quince mil en McDonald's con la Visa Galicia\".", "Entiende cosas como \"veinte lucas\", \"ayer\", \"en 6 cuotas\" o \"de los dos\".", "La app llena el formulario y te cuenta qué entendió. Revisa y toca \"Guardar gasto\": nada se guarda solo.", "Si tu celular no deja dictar, escribe la frase en el cuadro y toca \"Aplicar\"."] },
     { id: "tarjetas", n: "Tarjetas", go: "tarjetas", what: "Aquí van tus formas de pagar: tarjetas, efectivo, billetera.", b: ["Cada tarjeta muestra cuánto llevas gastado con ella este mes.", "Para crear una, toca agregar y ponle un nombre fácil de reconocer (ej. \"Visa Galicia Ed\").", "Puedes anotar el día que cierra y el día que vence, para acordarte de pagarla.", "También puedes crear \"Efectivo\" o \"Gasto Fijo\" para lo que no es tarjeta.", "Nunca escribas el número de la tarjeta: la app no lo necesita y no lo acepta."] },
     { id: "cuotas", n: "Cuotas", go: "cuotas", what: "Si compraste algo \"en cuotas\", aquí ves cuánto te falta por pagar.", b: ["Una compra en cuotas es pagar un poco cada mes en lugar de todo de una vez.", "Al agregar el gasto con una tarjeta de crédito, aparece \"¿En cuántas cuotas?\". Elige cuántas.", "\"Sin interés\" significa que no te cobran de más. Si te cobran extra, desmárcalo y pon el porcentaje.", "En esta pestaña ves cuánto debes en total, cuántas cuotas faltan y cuándo termina cada compra."] },
@@ -1943,8 +1972,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v35";
+  var APP_VERSION = "v36";
   var CHANGELOG = [
+    ["v36", "Buscador de gastos."],
     ["v35", "Avisos de gastos y eventos."],
     ["v34", "Montos con 2 decimales en la tabla."],
     ["v33", "Decimales con punto o coma."],
