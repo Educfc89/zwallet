@@ -1,8 +1,8 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B0F0E"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="zwallet"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icons/favicon.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="theme-color" content="#0B0F0E"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="zwallet Demo"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="../icons/favicon.png"><link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}@media (min-width:700px){html:not([data-tabs="bottom"]) .tabs{flex-wrap:wrap;overflow-x:visible}}</style>
 <style>.gctl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0 4px; }
 .gctl .segs { display: inline-flex; gap: 6px; }
@@ -60,7 +60,6 @@
 .tutline { display: flex; justify-content: flex-end; margin: 0 0 10px; }
 .tutrow { display: flex; justify-content: flex-end; margin: 0 0 8px; }
 </style>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script>
 <script>
 (function () {
   var ZW = window.ZW = window.ZW || {};
@@ -81,125 +80,17 @@
   });
 })();
 (function () {
-  var ZW = window.ZW;
   function saveFile(o) {
-    var blob = new Blob([o.data], { type: "application/octet-stream" }), a = document.createElement("a");
+    var d = o.data, blob = new Blob([d], { type: "application/octet-stream" }), a = document.createElement("a");
     a.href = URL.createObjectURL(blob); a.download = o.filename; document.body.appendChild(a); a.click();
     setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); return Promise.resolve();
   }
-  var cfg = window.ZW_FIREBASE, fb = window.firebase, ok = !!(cfg && cfg.apiKey && cfg.apiKey.indexOf("PEGA") < 0 && fb);
-  var resolveUser, userP = new Promise(function (r) { resolveUser = r; });
-  var DB = null, AUTH = null;
-  /* ---- pantalla de acceso ---- */
-  var css = '#zwgate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:#0B0F0E;color:#E8EFEC;font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}' +
-    '#zwgate .bx{width:100%;max-width:360px;display:grid;gap:12px}#zwgate img{width:72px;height:72px;border-radius:18px;margin:0 auto}' +
-    '#zwgate h1{margin:0;text-align:center;font-size:1.5rem}#zwgate p{margin:0;text-align:center;color:#9DB0A9;font-size:.9rem}' +
-    '#zwgate input{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid #2A3935;background:#17211E;color:#E8EFEC}' +
-    '#zwgate button{font:inherit;font-weight:600;padding:12px;border-radius:12px;border:1px solid #2A3935;background:#17211E;color:#E8EFEC;cursor:pointer}' +
-    '#zwgate button.p{background:#2BD27F;border-color:#2BD27F;color:#06130C}#zwgate .e{color:#FF8A80;min-height:1.2em}#zwgate .l{background:none;border:0;color:#9DB0A9;font-weight:400;text-decoration:underline;padding:4px}';
-  var gate;
-  function showGate(msg, form) {
-    if (!gate) { var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s); gate = document.createElement("div"); gate.id = "zwgate"; document.body.appendChild(gate); }
-    gate.hidden = false;
-    var inner = '<div class="bx"><img src="icons/icon-192.png" alt="zwallet"><h1>zwallet</h1>';
-    if (!form) inner += '<p>' + msg + '</p>';
-    else inner += '<p>Inicia sesión para ver los gastos de la casa.</p><input id="zwm" type="email" autocomplete="username" placeholder="Correo" inputmode="email"><input id="zwp" type="password" autocomplete="current-password" placeholder="Contraseña"><div class="e" id="zwe">' + (msg || "") + '</div><button class="p" id="zwin">Entrar</button><button id="zwnew">Crear mi cuenta (primera vez)</button><button class="l" id="zwreset">Olvidé mi contraseña</button>';
-    gate.innerHTML = inner + '</div>';
-    if (!form) return;
-    var g = function (id) { return document.getElementById(id); };
-    function err(e) { var c = e && e.code || ""; var m = { "auth/invalid-credential": "Correo o contraseña incorrectos.", "auth/wrong-password": "Contraseña incorrecta.", "auth/user-not-found": "No hay cuenta con ese correo: usa \"Crear mi cuenta\".", "auth/email-already-in-use": "Ese correo ya tiene cuenta: toca Entrar.", "auth/weak-password": "La contraseña necesita al menos 6 caracteres.", "auth/invalid-email": "Correo no válido.", "auth/too-many-requests": "Demasiados intentos, espera un momento.", "auth/network-request-failed": "Sin conexión." }; g("zwe").textContent = m[c] || ("No se pudo: " + (c || e)); }
-    g("zwin").onclick = function () { AUTH.signInWithEmailAndPassword(g("zwm").value.trim(), g("zwp").value).catch(err); };
-    g("zwnew").onclick = function () { AUTH.createUserWithEmailAndPassword(g("zwm").value.trim(), g("zwp").value).catch(err); };
-    g("zwreset").onclick = function () { var m = g("zwm").value.trim(); if (!m) { g("zwe").textContent = "Escribe tu correo arriba."; return; } AUTH.sendPasswordResetEmail(m).then(function () { g("zwe").textContent = "Te mandé un correo para crear otra contraseña."; }, err); };
-    g("zwp").onkeydown = function (e) { if (e.key === "Enter") g("zwin").click(); };
-  }
-  function boot() {
-    if (!ok) { showGate("Falta configurar Firebase: pega tus datos en firebase-config.js (mira el README).", false); return; }
-    fb.initializeApp(cfg); AUTH = fb.auth(); DB = fb.firestore();
-    try { DB.enablePersistence({ synchronizeTabs: true }).catch(function () {}); } catch (e) {}
-    AUTH.onAuthStateChanged(function (u) {
-      if (u) { ZW.email = u.email; if (gate) gate.hidden = true; resolveUser(u); loadBridge(); }
-      else { ZW.email = null; showGate("", true); }
-    });
-  }
-  ZW.onAction = function (a) {
-    if (a === "out" && AUTH) AUTH.signOut().then(function () { location.reload(); });
-
-    if (a === "export") {
-      var out = {}, cols = ["tx", "inc", "pays", "events"], done = 0, m = document.getElementById("ghimp");
-      if (m) m.textContent = "Preparando respaldo…";
-      Promise.all(cols.map(function (c) { return DB.collection(c).get().then(function (sn) { out[c] = {}; sn.docs.forEach(function (d) { out[c][d.id] = d.data(); }); }); }).concat([DB.doc("casa/meta").get().then(function (d) { if (d.exists) out["casa/meta"] = d.data(); })]))
-        .then(function () { var d = new Date(), z = function (n) { return (n < 10 ? "0" : "") + n; }; return saveFile({ filename: "zwallet_respaldo_" + d.getFullYear() + "-" + z(d.getMonth() + 1) + "-" + z(d.getDate()) + ".json", data: JSON.stringify(out) }); })
-        .then(function () { var o = document.getElementById("ghimp"); if (o) o.textContent = "Respaldo descargado."; }, function (e) { var o = document.getElementById("ghimp"); if (o) o.textContent = "No se pudo: " + (e && e.message || e); });
-      return;
-    }
-    if (a === "import") {
-      var f = document.createElement("input"); f.type = "file"; f.accept = ".json,application/json";
-      f.onchange = function () {
-        var file = f.files[0]; if (!file) return; var out = document.getElementById("ghimp"); if (out) out.textContent = "Leyendo…";
-        file.text().then(function (t) { return ZW.importData(JSON.parse(t), function (m) { var o = document.getElementById("ghimp"); if (o) o.textContent = m; }); })
-          .then(function (n) { var o = document.getElementById("ghimp"); if (o) o.textContent = "Listo: " + n + " registros importados."; })
-          .catch(function (e) { var o = document.getElementById("ghimp"); if (o) o.textContent = "No se pudo importar: " + (e && e.message || e); });
-      };
-      f.click();
-    }
-  };
-  ZW.importData = async function (data, say) {
-    var paths = [];
-    ["tx", "inc", "pays", "events"].forEach(function (c) { Object.keys(data[c] || {}).forEach(function (id) { paths.push([c + "/" + id, data[c][id]]); }); });
-    if (data["casa/meta"]) paths.push(["casa/meta", data["casa/meta"]]);
-    for (var i = 0; i < paths.length; i += 400) {
-      var b = DB.batch(); paths.slice(i, i + 400).forEach(function (p) { b.set(DB.doc(p[0]), p[1]); }); await b.commit();
-      if (say) say("Importando " + Math.min(i + 400, paths.length) + " de " + paths.length + "…");
-    }
-    return paths.length;
-  };
-
-  /* ---- puente con el Sheet (Apps Script) ---- */
-  ZW.bridgeCfg = null;
-  function loadBridge() {
-    DB.doc("cfg/bridge").get().then(function (d) { var v = d.exists ? d.data() : null; if (v && v.url) { ZW.bridgeCfg = { url: v.url, token: v.token || "" }; if (ZW.rerender) ZW.rerender(); } }).catch(function () {});
-  }
-  ZW.bridge = async function (a, body) {
-    var c = ZW.bridgeCfg; if (!c || !c.url || !c.token) throw { code: "bridge_off" };
-    var r, j;
-    try {
-      if (a === "read" || a === "config" || a === "ping") r = await fetch(c.url + (c.url.indexOf("?") < 0 ? "?" : "&") + "a=" + a + "&t=" + encodeURIComponent(c.token), { redirect: "follow" });
-      else { var p = Object.assign({ a: a, t: c.token }, body || {}); r = await fetch(c.url, { method: "POST", redirect: "follow", headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify(p) }); }
-      j = await r.json();
-    } catch (e) { throw { code: "bridge_net" }; }
-    if (!j || !j.ok) throw { code: j && j.err === "auth" ? "bridge_auth" : "bridge_err", msg: j && (j.msg || j.err) };
-    return j;
-  };
-  var _oa = ZW.onAction;
-  ZW.onAction = function (a) {
-    if (a === "bsave") {
-      var u = (document.getElementById("br-url") || {}).value || "", t = (document.getElementById("br-tok") || {}).value || "", m = document.getElementById("brmsg");
-      u = u.trim(); t = t.trim();
-      if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec/.test(u) || !t) { if (m) m.textContent = "Pega la dirección completa (https://script.google.com/macros/s/…/exec) y el token."; return; }
-      ZW.bridgeCfg = { url: u, token: t };
-      DB.doc("cfg/bridge").set({ url: u, token: t, at: Date.now() }).then(function () { return ZW.bridge("ping"); }).then(function () { if (ZW.rerender) ZW.rerender(); var m2 = document.getElementById("brmsg"); if (m2) m2.textContent = "Conectado con el Sheet."; }, function (e) { var m2 = document.getElementById("brmsg"); if (m2) m2.textContent = e && e.code === "bridge_auth" ? "Guardado, pero el token no coincide con el de zwallet_Config." : "Guardado, pero no pude llegar al script: revisa la dirección."; });
-      return;
-    }
-    if (a === "btest") { var m3 = document.getElementById("brmsg"); if (m3) m3.textContent = "Probando…"; ZW.bridge("ping").then(function () { var m4 = document.getElementById("brmsg"); if (m4) m4.textContent = "Conexión correcta."; }, function (e) { var m4 = document.getElementById("brmsg"); if (m4) m4.textContent = e.code === "bridge_auth" ? "El token no coincide." : "No pude conectar."; }); return; }
-    if (a === "bopen") { ZW.bridge("ping").then(function (j) { window.open(j.url, "_blank", "noopener"); }, function () {}); return; }
-    if (_oa) _oa(a);
-  };
-  var dl = { save: saveFile };
-  window.claude = {
-    use: function (n) {
-      if (n === "downloads") return Promise.resolve(dl);
-      if (n === "db") return ok ? userP.then(function () { return DB; }) : Promise.resolve(null);
-      if (n === "user") return Promise.resolve({ can: function () { return Promise.resolve(true); }, isOwner: function () { return false; } });
-      return Promise.resolve(null);
-    }
-  };
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+  window.claude = { use: function (n) { return Promise.resolve(n === "downloads" ? { save: saveFile } : null); } };
 })();
 
 </script>
 </head><body>
-<title>zwallet</title>
+<title>zwallet Demo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Instrument+Sans:wght@400;500;600&display=swap">
@@ -580,11 +471,11 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v32</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v32</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
-  <p class="foot">Datos reales de la casa de Eduardo y Zaydi, guardados en la base compartida de esta app: los dos ven los mismos cambios. El Excel se arma con lo que ves en pantalla. Nunca se piden números de tarjeta ni de cuenta.</p>
+  <p class="foot">Versión de prueba con datos inventados: toca lo que quieras, nada de esto es real y no se comparte. El Excel se arma con lo que ves en pantalla. Nunca se piden números de tarjeta ni de cuenta.</p>
 </main>
 
 <div id="onb" class="onb" role="dialog" aria-modal="true" aria-labelledby="onb-t" hidden></div>
@@ -905,6 +796,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
   /* ---------- Datos de ejemplo ---------- */
   function rng(seed) { return function () { seed |= 0; seed = (seed + 0x6D2B79F5) | 0; var t = Math.imul(seed ^ (seed >>> 15), 1 | seed); t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t; return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
+  function demoNames() { state.people[0].name = "Ana"; state.people[1].name = "Luis"; state.cards.forEach(function (c) { c.name = c.name.replace(/ Ed$/, " Ana").replace(/ Zay$/, " Luis"); }); }
   function buildSample() {
     var r = rng(20261007);
     function jit(b, p) { return Math.round(b * (1 + (r() * 2 - 1) * p) / 100) * 100; }
@@ -913,47 +805,47 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     for (var mi = 0; mi < 7; mi++) {
       var key = shiftKey(FIRST_KEY, mi), cur = key === CUR_KEY, prev = shiftKey(key, -1);
       var T = [
-        [2,"Alquiler","alquiler","k8",380000 + mi * 9000,both],
-        [5,"Expensas","fijo","k8",jit(85000,0.03),both],
-        [11,"Luz","servicios","k4",jit(38000,0.2),both],
-        [12,"Gas","servicios","k4",jit(21000,0.25),both],
-        [14,"Internet","fijo","k1",jit(36000,0.05),both],
-        [3,"Compra en Coto","mercado","k3",jit(190000,0.15),both],
-        [10,"Verdulería","mercado","k6",jit(22000,0.2),both],
-        [17,"Compra en Dia","mercado","k3",jit(58000,0.2),both],
-        [24,"Carnicería","mercado","k7",jit(42000,0.2),both],
-        [27,"Chino","mercado","k6",jit(19000,0.2),A],
-        [4,"Carga SUBE de Luis","transp","k7",15000,L],
-        [19,"Carga SUBE de Ana","transp","k6",15000,A],
-        [8,"Nafta","comb","k2",jit(52000,0.15),L],
-        [16,"Farmacity","farm","k2",jit(26000,0.4),L],
-        [6,"Swiss Medical","salud","k8",jit(145000 + mi * 3000,0.01),both],
-        [12,"Netflix y Spotify","susc","k1",12400,both],
-        [20,"Salida a cenar","rest","k3",jit(65000,0.25),both],
-        [26,"Cine","entre","k4",jit(15000,0.1),both],
-        [15,"Curso de inglés","educ","k5",48000,A]
+        [2,"Alquiler","alquiler","kGF",380000 + mi * 9000,both],
+        [5,"Expensas","fijo","kGF",jit(85000,0.03),both],
+        [11,"Luz","servicios","kVS",jit(38000,0.2),both],
+        [12,"Gas","servicios","kVS",jit(21000,0.25),both],
+        [14,"Internet","fijo","kVG",jit(36000,0.05),both],
+        [3,"Compra en Coto","mercado","kMS",jit(190000,0.15),both],
+        [10,"Verdulería","mercado","kVN",jit(22000,0.2),both],
+        [17,"Compra en Dia","mercado","kMS",jit(58000,0.2),both],
+        [24,"Carnicería","mercado","kMN",jit(42000,0.2),both],
+        [27,"Chino","mercado","kVN",jit(19000,0.2),A],
+        [4,"Carga SUBE de Luis","transp","kMN",15000,L],
+        [19,"Carga SUBE de Ana","transp","kVN",15000,A],
+        [8,"Nafta","comb","kMG",jit(52000,0.15),L],
+        [16,"Farmacity","farm","kMG",jit(26000,0.4),L],
+        [6,"Swiss Medical","salud","kGF",jit(145000 + mi * 3000,0.01),both],
+        [12,"Netflix y Spotify","susc","kVG",12400,both],
+        [20,"Salida a cenar","rest","kMS",jit(65000,0.25),both],
+        [26,"Cine","entre","kVS",jit(15000,0.1),both],
+        [15,"Curso de inglés","educ","kAS",48000,A]
       ];
-      if (mi === 2) T.push([9, "Veterinario", "mascota", "k4", 28000, both]);
-      if (mi === 3) T.push([18, "Regalo de cumpleaños", "regalo", "k2", 35000, L]);
-      if (mi === 5) T.push([13, "Zapatillas", "ropa", "k1", 70000, A]);
+      if (mi === 2) T.push([9, "Veterinario", "mascota", "kVS", 28000, both]);
+      if (mi === 3) T.push([18, "Regalo de cumpleaños", "regalo", "kMG", 35000, L]);
+      if (mi === 5) T.push([13, "Zapatillas", "ropa", "kVG", 70000, A]);
       T.forEach(function (t) {
         var c = cardOf(t[3]), credit = c.kind === "Crédito";
         if (!credit && cur && t[0] > 7) return;
         add((credit ? prev : key) + "-" + pad(t[0]), key, t[1], t[2], t[3], t[4], t[5]);
       });
       state.cardPaid[key + "|k8"] = "p2";
-      add(prev + "-18", key, "Salida de Luis con amigos", "rest", "k2", jit(40000, 0.2), L, null, "k1", 0.5);
+      add(prev + "-18", key, "Salida de Luis con amigos", "rest", "kMG", jit(40000, 0.2), L, null, "kVG", 0.5);
       [[5,"Sueldo","p1",1150000 + mi * 20000],[5,"Sueldo","p2",1350000 + mi * 20000]].forEach(function (i) { state.inc.push({ id: nid("i"), date: key + "-" + pad(i[0]), source: i[1], person: i[2], amt: i[3] }); });
       if ((mi === 2 || mi === 5) && !cur) state.inc.push({ id: nid("i"), date: key + "-12", source: "Trabajo extra", person: "p2", amt: 180000 });
     }
-    add("2026-10-03", "2026-11", "Compra en Coto", "mercado", "k3", 168000, both);
-    add("2026-10-05", "2026-11", "Farmacity", "farm", "k2", 24500, L);
-    add("2026-10-06", "2026-11", "Cena de cumpleaños", "rest", "k1", 58000, both);
+    add("2026-10-03", "2026-11", "Compra en Coto", "mercado", "kMS", 168000, both);
+    add("2026-10-05", "2026-11", "Farmacity", "farm", "kMG", 24500, L);
+    add("2026-10-06", "2026-11", "Cena de cumpleaños", "rest", "kVG", 58000, both);
     state.cardPaid["2026-11|k8"] = "p2";
-    add("2026-02-10", "2026-02", "Colchón", "cuota", "k1", 480000, both, { n: 6, free: true, rate: 0 });
-    add("2026-06-07", "2026-06", "Lavadora", "cuota", "k3", 936000, both, { n: 12, free: true, rate: 0 });
-    add("2026-08-05", "2026-08", "TV nuevo", "cuota", "k2", 600000, both, { n: 6, free: false, rate: 18 });
-    add("2026-10-02", "2026-10", "Celular de Luis", "cuota", "k2", 450000, L, { n: 3, free: true, rate: 0 });
+    add("2026-02-10", "2026-02", "Colchón", "cuota", "kVG", 480000, both, { n: 6, free: true, rate: 0 });
+    add("2026-06-07", "2026-06", "Lavadora", "cuota", "kMS", 936000, both, { n: 12, free: true, rate: 0 });
+    add("2026-08-05", "2026-08", "TV nuevo", "cuota", "kMG", 600000, both, { n: 6, free: false, rate: 18 });
+    add("2026-10-02", "2026-10", "Celular de Luis", "cuota", "kMG", 450000, L, { n: 3, free: true, rate: 0 });
     state.events.push({ id: "ev1", name: "Fiesta de cumpleaños", date: "2026-10-17", lastBy: "m1",
       members: [{ id: "m1", name: "Ana", alias: "ana.wallet" }, { id: "m2", name: "Luis", alias: "luis.mp" }, { id: "m3", name: "Sofía", alias: "" }, { id: "m4", name: "Marcos", alias: "" }],
       items: [{ id: "c1", desc: "Cerdo", amt: 100000, by: "m1", split: ["m1", "m2", "m3", "m4"] }, { id: "c2", desc: "Bebidas", amt: 60000, by: "m2", split: ["m1", "m2", "m3", "m4"] }, { id: "c3", desc: "Postre", amt: 40000, by: "m3", split: ["m1", "m2", "m3", "m4"] }] });
@@ -1984,7 +1876,6 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     { t: "Quién le debe a quién", go: ["dividir", "Ir a Dividir"], b: ["Solo aparece si elegiste dos personas o más.", "Para cada tarjeta eliges quién la pagó este mes, y la app calcula lo que le corresponde al otro.", "Al final de Inicio ves cuánto le toca pagar a cada uno, el resumen por tarjeta y la transferencia que deben hacerse.", "En \"Gastos del mes\" cambias de quién es cada gasto sin abrirlo. \"Gasto por participante\" muestra lo que le toca a cada quien, con qué tarjetas se pagó y cuánto lleva de su presupuesto."] },
     { t: "Eventos: grupos temporales", go: ["eventos", "Ir a Eventos"], b: ["Para una fiesta, un asado o un viaje: creas un evento y pones los nombres de quienes participan.", "Cada persona suma lo que va comprando y de quién es cada compra (para todos o solo para algunos).", "La app calcula cuánto pagó cada quien, cuánto le corresponde y quién le paga a quién. Si tú compraste todo, cada uno ve cuánto te debe; si dos gastaron lo mismo, quedan a mano.", "Es independiente de tu presupuesto mensual."] },
     { t: "Instala zwallet en tu celular", go: ["ajustes", "Ir a Ajustes"], b: ["Abre la dirección de zwallet en el navegador del celular e inicia sesión con tu correo.", "Android (Chrome): menú de los tres puntos → \"Instalar app\" o \"Agregar a pantalla principal\". iPhone (Safari): botón Compartir → \"Agregar a inicio\".", "En la computadora, Chrome o Edge muestran un icono de instalar en la barra de direcciones. También está el botón \"Instalar app\" en Ajustes.", "Queda con su icono y se abre a pantalla completa, igual que una app. Funciona en el navegador y como app: los datos son los mismos."] },
-    { t: "Conecta tu Google Sheet", go: ["ajustes", "Ir a Ajustes"], b: ["En tu Balance Mensual: Extensiones → Apps Script, pega el archivo Code.gs y ejecuta \"preparar\" (menú zwallet). Se crean las hojas zwallet_Config, zwallet_Diagnóstico y zwallet_Instrucciones.", "Implementar → Nueva implementación → Aplicación web (Ejecutar como: yo, Acceso: cualquier persona). Copia la dirección /exec.", "En Ajustes pega la dirección y el token que está en zwallet_Config. Se guarda para los dos.", "Con eso: \"Actualizar desde el Sheet\" trae tus cambios, \"Crear hoja de…\" manda el mes al Sheet, y la configuración (tarjetas, categorías, cotización) se edita en zwallet_Config."] },
     { t: "Cuenta de restaurante", go: ["eventos", "Ir a Eventos"], b: ["En Eventos toca \"Cuenta de restaurante\": pon el nombre, la fecha y cuántas personas son.", "Dices a qué núcleo familiar pertenece cada persona (o usas \"Agrupar en parejas\").", "Anotas cada plato con cantidad y precio por unidad, y asignas cuántas unidades consumió cada núcleo, o divides en partes iguales.", "La propina arranca en tu valor habitual (10%) y se edita; se reparte según lo consumido. Al cerrar ves cuánto paga cada núcleo y quién debe a quién, con alias.", "Con \"Registrar mi parte como gasto\" se anota en Gastos con el nombre del restaurante. Con \"Compartir\" mandas el cobro por WhatsApp u otra app."] },
     { t: "Dictar un gasto por voz", go: ["inicio:add", "Probar el dictado"], b: ["En Inicio o Gastos toca \"🎤 Dictar\" (se abre el formulario y empieza a escuchar). La primera vez el navegador pide permiso para el micrófono: acepta.", "Di todo en una frase, por ejemplo: \"gasté quince mil en McDonald's con la Visa Galicia\". También entiende \"veinte lucas\", \"45 mil 500\", \"ayer\", \"en 6 cuotas\", \"de los dos\" o el nombre de quien lo gastó.", "La app rellena monto, descripción, categoría, tarjeta, de quién y fecha, y te cuenta qué entendió y qué falta. Nada se guarda solo: revisa y toca Guardar.", "Funciona mejor en Chrome y Android. Si tu navegador no dicta, escribe la frase en el cuadro (o usa el micrófono del teclado) y toca Aplicar. No gasta datos de IA: la frase se interpreta dentro de la app."] },
     { t: "Meses, consejos y Excel", go: ["consejos", "Ver consejos"], b: ["\"Cerrar mes\" abre el siguiente y trae gastos fijos, alquiler, servicios y suscripciones; las cuotas pasan solas. \"Agregar mes\" solo suma un mes vacío; el selector de arriba te deja saltar entre meses.", "Consejos analiza el mes que estés viendo, para una persona o para dos según lo que elegiste.", "\"Descargar Excel\" exporta justo lo que ves en pantalla y siempre te pide confirmación antes de guardar."] }
@@ -2041,12 +1932,12 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   /* Versión de la app y puntos de restauración */
   var APP_VERSION = "v32";
   var CHANGELOG = [
-    ["v32", "Tutorial rehecho en lenguaje simple: ver todo o por sección, y botón Tutorial en cada pestaña."],
-    ["v31", "Botón de tutorial en cada sección. Restaurante: núcleos por cantidad de personas (ej. 5,1)."],
-    ["v30", "Para pagar en arranca siempre en el mes siguiente (noviembre; en diciembre pasa a diciembre). Lo puedes cambiar."],
-    ["v29", "Dictar gastos por voz (o escribiendo una frase): monto, descripción, tarjeta, de quién y fecha se completan solos."],
-    ["v28", "Eventos: cuenta de restaurante por núcleos con propina, registrar mi parte y compartir. Gastos en tabla ordenable. Compartir lo que se debe con alias."],
-    ["v27", "App web instalable (GitHub + Firebase) con puente al Google Sheet: traer cambios, enviar el mes y configuración desde el Sheet."],
+    ["v32", "Tutorial simple por sección."],
+    ["v31", "Tutorial por sección y núcleos por cantidad."],
+    ["v30", "Para pagar en: mes siguiente por defecto."],
+    ["v29", "Dictar gastos por voz o texto."],
+    ["v28", "Cuenta de restaurante por núcleos, Gastos en tabla, compartir con alias."],
+    ["v27", "App web instalable (GitHub Pages)."],
     ["v26", "Elegir el mes al crear el Sheet desde Ajustes."],
     ["v25", "Botón Actualizar desde el Sheet, arriba de Ajustes."],
     ["v24", "En Gastos aparece primero el último gasto cargado, como un resumen de tarjeta."],
@@ -2081,7 +1972,8 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       CHANGELOG.map(function (c) { return "<li><b>" + c[0] + "</b> · " + esc(c[1]) + "</li>"; }).join("") + "</ul>" +
       '<p class="note" style="margin-top:10px">Para volver a una versión anterior del programa, escríbeme en el chat «volver a v8» (guardo una copia de cada versión). Los datos no cambian al volver de versión; para eso están los puntos de restauración de abajo.</p></section>';
   }
-  function snapCard() {
+  function snapCard(){ return ""; }
+  function snapCard_off() {
     var can = !!(typeof SYNC !== "undefined" && SYNC && SYNC.db && SYNC.canWrite);
     var list = SNAPS.slice().sort(function (a, b) { return b.at - a.at; }).slice(0, 12);
     var rows = list.length ? list.map(function (s) {
@@ -2100,6 +1992,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     return '<section class="card"><h2>Cuenta e instalación</h2>' + acc +
       '<p class="label" style="margin-top:14px">Instalar zwallet como app</p><p class="note" id="ghinst">' + ((window.ZW && window.ZW.installHint) || "") + '</p><div class="actions"><button class="btn primary" type="button" data-gh="install">Instalar app</button></div>' +
       (window.ZW && window.ZW.email ? '<p class="label" style="margin-top:14px">Importar datos</p><p class="note">Sube el archivo zwallet_datos.json solo una vez, cuando la base esté vacía. Si ya hay datos, se reemplazan los que tengan el mismo identificador.</p><div class="actions"><button class="btn" type="button" data-gh="import">Elegir zwallet_datos.json</button><button class="btn" type="button" data-gh="export">Exportar respaldo JSON</button></div><p class="note" id="ghimp"></p>' : "") + '</section>';
+  }
+  function permCard_off() {
+    return '<section class="card"><h2>Compartir y permisos</h2><p class="sec-sub">Para que Zaydi pueda ver y editar desde su celular o la PC, o para cambiar quién puede qué.</p><div class="actions"><button class="btn" type="button" data-act="perm">Abrir permisos</button></div><p class="note" style="margin-top:8px">También está en los botones de arriba del chat, junto a «Compartir».</p></section>';
   }
   if (!ui.sel) { ui.sel = {}; ui.selMode = false; ui.selAsk = false; }
   function selCount() { return Object.keys(ui.sel).length; }
@@ -2273,8 +2168,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   var SHEET_SERVER = "Google Drive";
   var SHEET_FOLDER = "1UMZsGVrkNaHKWEs2j52RXYnBVGzaP1Xn";
   var SHEETUI = { busy: false, msg: "", plan: null, last: 0, out: null, xbusy: false };
-  function sheetCard() {
-    var br = (window.ZW && window.ZW.bridgeCfg) || {}, ok = !!(br.url && br.token), pl = SHEETUI.plan, can = ok && !!(typeof SYNC !== "undefined" && SYNC && SYNC.db && SYNC.canWrite);
+  function sheetCard(){ return ""; }
+  function sheetCard_off() {
+    var pl = SHEETUI.plan, can = !!(typeof SYNC !== "undefined" && SYNC && SYNC.db && SYNC.canWrite);
     var conf = "";
     if (pl) {
       var items = [];
@@ -2283,70 +2179,14 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       pl.upds.slice(0, 8).forEach(function (u) { items.push("~ " + u.desc + ": " + fmt(u.amt)); });
       conf = '<div class="result" role="alert"><b>Cambios en el Sheet (' + esc(monthName(pl.key)) + '):</b> ' + pl.adds.length + " nuevos, " + pl.dels.length + " borrados, " + pl.upds.length + " con otro monto.<br>" + items.map(esc).join("<br>") + '</div><div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-act="sheet:ok">Aplicar cambios</button><button class="btn" type="button" data-act="sheet:no">Cancelar</button></div>';
     }
-    var conn = '<h2>Google Sheet (Balance Mensual)</h2><p class="sec-sub">La app habla con tu Sheet por un pequeño script que pegas una vez en el Sheet (pasos en la hoja zwallet_Instrucciones y en el Tutorial).</p>' +
-      '<div class="field" style="margin:10px 0"><label for="br-url">Dirección del script (termina en /exec)</label><input id="br-url" name="zw_script_url" type="text" autocomplete="off" data-lpignore="true" inputmode="url" placeholder="https://script.google.com/macros/s/…/exec" value="' + esc(br.url || "") + '"></div>' +
-      '<div class="field" style="margin:10px 0"><label for="br-tok">Token de acceso (hoja zwallet_Config)</label><input id="br-tok" name="zw_script_token" type="text" autocomplete="off" data-lpignore="true" style="-webkit-text-security:disc" placeholder="Token" value="' + esc(br.token || "") + '"></div>' +
-      '<div class="actions"><button class="btn' + (ok ? "" : " primary") + '" type="button" data-gh="bsave">' + (ok ? "Guardar cambios de conexión" : "Guardar conexión") + '</button>' + (ok ? '<button class="btn" type="button" data-gh="btest">Probar</button><a class="btn" target="_blank" rel="noopener" href="https://docs.google.com/spreadsheets/d/' + SHEET_ID + '/edit">Abrir el Sheet</a>' : "") + '</div>' +
-      '<p class="note" id="brmsg">' + (ok ? "Conectado. Lo comparten los dos: se guarda en la base de la casa." : "Sin conectar todavía.") + '</p>';
-    var imp = '<h3 style="margin-top:18px">Traer cambios del Sheet</h3><p class="sec-sub">Lo que cambies en la pestaña de mes más reciente de tu Balance Mensual se trae a la app: gastos nuevos, borrados y cambios de monto. La categoría y de quién es se editan aquí.</p>' +
+    return '<section class="card"><h2>Traer cambios del Google Sheet</h2><p class="sec-sub">Lo que cambies en la pestaña más reciente de tu Balance Mensual (hoy el mes actual) se trae a la app: gastos nuevos, borrados y cambios de monto. La categoría y de quién es se editan aquí. Se revisa solo al abrir la app con tu cuenta, y también con el botón.</p>' +
       '<div class="actions"><button class="btn primary" type="button" data-act="sheet:run"' + (can && !SHEETUI.busy ? "" : " disabled") + ">" + (SHEETUI.busy ? "Revisando…" : "Actualizar desde el Sheet") + "</button></div>" +
-      (SHEETUI.msg ? '<p class="status ok" role="status">' + esc(SHEETUI.msg) + "</p>" : "") + conf;
-    var exp = '<h3 style="margin-top:18px">Pasar la app al Sheet</h3><p class="sec-sub">Crea (o reemplaza) en tu Sheet una pestaña con los gastos de ' + esc(monthName(sheetXKey())) + ' en el formato de tu Balance Mensual. No toca tus pestañas originales.</p>' +
-      '<div class="field" style="margin:10px 0"><label for="sh-mes">Mes a enviar</label><select id="sh-mes" data-sheetmonth="1">' + monthKeys().map(function (k) { return '<option value="' + k + '"' + (k === sheetXKey() ? " selected" : "") + ">" + esc(monthLabel(k)) + "</option>"; }).join("") + "</select></div>" +
-      '<div class="actions"><button class="btn" type="button" data-act="sheet:out"' + (can && !SHEETUI.xbusy ? "" : " disabled") + ">" + (SHEETUI.xbusy ? "Enviando…" : "Crear hoja de " + esc(monthName(sheetXKey()))) + "</button></div>" +
-      (SHEETUI.out ? '<p class="status ok" role="status">Listo: <a href="' + esc(SHEETUI.out.url) + '" target="_blank" rel="noopener">abrir ' + esc(SHEETUI.out.title) + "</a></p>" : "");
-    var cfg = '<h3 style="margin-top:18px">Configuración desde el Sheet</h3><p class="sec-sub">Ajustes, tarjetas y categorías también se pueden editar en la hoja zwallet_Config del Sheet.</p>' +
-      '<div class="actions"><button class="btn" type="button" data-act="sheet:cfgput"' + (can ? "" : " disabled") + '>Enviar configuración al Sheet</button><button class="btn" type="button" data-act="sheet:cfgget"' + (can ? "" : " disabled") + '>Traer configuración del Sheet</button></div>' +
-      (SHEETUI.cfgmsg ? '<p class="status ok" role="status">' + esc(SHEETUI.cfgmsg) + "</p>" : "");
-    return '<section class="card">' + conn + (ok ? imp + exp + cfg : "") + "</section>";
-  }
-  function cfgNum(n) { return n == null || n === "" ? "" : String(n).replace(".", ","); }
-  function cfgBuild() {
-    var S = { "Moneda": state.cur, "País": state.country, "Cotización US$": cfgNum(state.usdRate), "Recargo US$ %": cfgNum(state.usdSurcharge), "Presupuesto del grupo": cfgNum(state.budget) };
-    state.people.forEach(function (p) { S["Presupuesto de " + p.name] = cfgNum((state.pbudget || {})[p.id]); });
-    return { settings: S, cards: state.cards.map(function (c) { return { id: c.id, name: c.name, kind: c.kind, red: c.red, bank: c.bank, closing: c.closing, due: c.due, owner: c.owner, on: c.on !== false }; }), cats: state.cats.map(function (c) { return { id: c.id, name: c.name }; }) };
-  }
-  function cfgApply(c) {
-    var S = c.settings || {}, n = { set: 0, card: 0, cardNew: 0, cat: 0, catNew: 0 };
-    function num(v) { var x = sNum(v); return x == null ? null : x; }
-    if (S["Moneda"]) { state.cur = String(S["Moneda"]).toUpperCase().slice(0, 4); n.set++; }
-    if (S["País"]) { state.country = String(S["País"]).toUpperCase().slice(0, 3); n.set++; }
-    var u = num(S["Cotización US$"]); if (u && u > 0) { state.usdRate = u; n.set++; }
-    var s2 = num(S["Recargo US$ %"]); if (s2 != null && s2 >= 0 && s2 < 200) { state.usdSurcharge = s2; n.set++; }
-    var g = num(S["Presupuesto del grupo"]); if (g != null && g >= 0) { state.budget = g; n.set++; }
-    state.pbudget = state.pbudget || {};
-    state.people.forEach(function (p) { var v = num(S["Presupuesto de " + p.name]); if (v != null && v >= 0) { state.pbudget[p.id] = v; n.set++; } });
-    function own(v, old) { v = String(v || "").trim(); if (!v) return old; if (v.toLowerCase() === "ambos") return "ambos"; var p = state.people.filter(function (x) { return x.id === v || x.name.toLowerCase() === v.toLowerCase(); })[0]; return p ? p.id : old; }
-    function tv(v, old) { v = String(v == null ? "" : v).trim(); if (v === "") return ""; return /^\d+$/.test(v) && (typeof old === "number" || old === undefined) ? Number(v) : v; }
-    (c.cards || []).forEach(function (r) {
-      var name = String(r.name || "").trim(); if (!name) return;
-      var cd = state.cards.filter(function (x) { return x.id === r.id; })[0];
-      if (!cd) { cd = { id: nid("k"), name: name, kind: "Otro", red: "—", bank: "—", closing: "", due: "", owner: "ambos", on: true }; state.cards.push(cd); n.cardNew++; } else n.card++;
-      cd.name = name; if (KINDS.indexOf(r.kind) >= 0) cd.kind = r.kind;
-      if (r.red) cd.red = r.red; if (r.bank) cd.bank = r.bank;
-      cd.closing = tv(r.closing, cd.closing); cd.due = tv(r.due, cd.due); cd.owner = own(r.owner, cd.owner); cd.on = r.on !== false;
-    });
-    (c.cats || []).forEach(function (r) {
-      var name = String(r.name || "").trim(); if (!name) return;
-      var ct = state.cats.filter(function (x) { return x.id === r.id; })[0];
-      if (ct) { ct.name = name; n.cat++; }
-      else if (!state.cats.some(function (x) { return x.name.toLowerCase() === name.toLowerCase(); })) { state.cats.splice(Math.max(state.cats.length - 1, 0), 0, { id: nid("x"), name: name, ci: state.cats.length + 1 }); n.catNew++; }
-    });
-    return n;
-  }
-  async function cfgRun(dir) {
-    SHEETUI.cfgmsg = ""; 
-    try {
-      if (dir === "put") { await ZW.bridge("setconfig", { config: cfgBuild() }); SHEETUI.cfgmsg = "Listo: la hoja zwallet_Config del Sheet quedó con la configuración de la app."; }
-      else {
-        var r = await ZW.bridge("config"), c = r.config || {};
-        if (!c.cards || !c.cards.length) throw { code: "cfg_vacia" };
-        if (SYNC.db && SYNC.canWrite) await snapSave("Antes de traer la configuración del Sheet", true);
-        var n = cfgApply(c);
-        SHEETUI.cfgmsg = "Configuración traída: " + n.set + " ajustes, " + n.card + " tarjetas al día, " + n.cardNew + " nuevas, " + n.cat + " categorías al día, " + n.catNew + " nuevas.";
-      }
-    } catch (e) { SHEETUI.cfgmsg = e && e.code === "cfg_vacia" ? "La hoja zwallet_Config todavía no tiene configuración: primero usa \"Enviar configuración al Sheet\"." : sheetErr(e); }
-    render();
+      (SHEETUI.msg ? '<p class="status ok" role="status">' + esc(SHEETUI.msg) + "</p>" : "") + conf +
+      '<h3 style="margin-top:18px">Pasar la app al Sheet</h3><p class="sec-sub">Crea en tu Drive un Google Sheet nuevo con los gastos de ' + esc(monthName(sheetXKey())) + ' en el mismo formato de tu Balance Mensual, listo para copiar y pegar en esa pestaña. No modifica tu Balance Mensual.</p>' +
+      '<div class="field" style="margin:10px 0"><label for="sh-mes">Mes a descargar</label><select id="sh-mes" data-sheetmonth="1">' + monthKeys().map(function (k) { return '<option value="' + k + '"' + (k === sheetXKey() ? " selected" : "") + ">" + esc(monthLabel(k)) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="actions"><button class="btn" type="button" data-act="sheet:out"' + (SHEETUI.xbusy ? " disabled" : "") + ">" + (SHEETUI.xbusy ? "Creando…" : "Crear Sheet de " + esc(monthName(sheetXKey()))) + "</button></div>" +
+      (SHEETUI.out ? '<p class="status ok" role="status">Listo: <a href="' + esc(SHEETUI.out.url) + '" target="_blank" rel="noopener">abrir ' + esc(SHEETUI.out.title) + "</a></p>" : "") +
+      '<p class="note" style="margin-top:10px">Lo que se carga en la app no pasa al Sheet. Usa tu conexión con Google Drive: la primera vez te pide permiso.</p></section>';
   }
   function viewAjustes() {
     var cntr = COUNTRIES.filter(function (c) { return c.id === state.country; })[0];
@@ -2415,7 +2255,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       '</div><div class="onb-bar"><button class="onb-back" type="button" data-onb="prev" aria-label="Paso anterior"' + (i === 0 ? " disabled" : "") + ">" + arrowL + '</button><button class="onb-next" type="button" data-onb="' + (s.last ? "done" : "next") + '"><span>' + (s.last ? "Empezar" : "Siguiente") + "</span>" + arrowR + "</button></div>";
     if (ui.onb.focus) { ui.onb.focus = false; var h = $("onb-t"); if (h) { h.focus({ preventScroll: true }); el.scrollTop = 0; } }
   }
-  function onbSeen() { try { return true; } catch (e) { return false; } }
+  function onbSeen() { try { return window.localStorage.getItem("pw_onb_v1") === "1"; } catch (e) { return false; } }
   function onbMark() { try { window.localStorage.setItem("pw_onb_v1", "1"); } catch (e) {} }
 
   /* ---------- Render principal ---------- */
@@ -3051,7 +2891,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   getDownloads().then(function (d) { if (!d) { var s = document.createElement("style"); s.textContent = "#btn-xlsx{display:none!important}"; document.head.appendChild(s); } });
 
   ui.onb.on = !onbSeen();
-  layoutLoad(); layoutApply(); ordLoad();
+  demoNames(); buildSample(); layoutLoad(); layoutApply(); ordLoad();
   try { var hh = window.location.hash || ""; if (hh.indexOf("#ev~") === 0) { ui.incoming = evFromToken(hh.slice(4)); ui.tab = "eventos"; } } catch (e) {}
   render();
 
@@ -3314,10 +3154,6 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
   function sheetErr(e) {
     var c = e && e.code;
-    if (c === "bridge_off") return "Falta conectar el Sheet: pega la dirección y el token aquí arriba.";
-    if (c === "bridge_auth") return "El token no coincide con el de la hoja zwallet_Config.";
-    if (c === "bridge_net") return "No pude llegar al script del Sheet (revisa la dirección y la conexión).";
-    if (c === "bridge_err") return "El script del Sheet respondió con un error: mira la hoja zwallet_Diagnóstico.";
     if (c === "needs_reauth") return "Vuelve a conectar Google Drive en Ajustes > Conectores de Claude.";
     if (c === "server_not_connected" || c === "selection_required") return "No encuentro la conexión con Google Drive en tu cuenta.";
     if (c === "not_in_manifest" || c === "consent_required") return "No diste permiso a Google Drive para esta app.";
@@ -3340,7 +3176,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (SHEETUI.busy) return;
     SHEETUI.busy = true; if (!auto) { SHEETUI.msg = ""; render(); }
     try {
-      var text = (await ZW.bridge("read")).text || "";
+      var mcp = await window.claude.use("mcp"); if (!mcp) throw { code: "capability_disabled" };
+      var r = await mcp.callTool(SHEET_SERVER, "read_file_content", { fileId: SHEET_ID }, { cache: false });
+      var p = r && r.payload, text = typeof p === "string" ? p : (p && p.fileContent) || "";
       var months = sheetParse(text), mo = months[0];
       if (!mo || mo.rows.length < 10) throw { code: "lectura" };
       var pl = sheetPlan(mo);
@@ -3375,17 +3213,19 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var key = sheetXKey(), d = new Date(), z = function (n) { return (n < 10 ? "0" : "") + n; };
     var title = "zwallet " + monthName(key) + " " + key.slice(0, 4) + " (" + z(d.getDate()) + "-" + z(d.getMonth() + 1) + " " + z(d.getHours()) + "." + z(d.getMinutes()) + ")";
     try {
-      var r = await ZW.bridge("write", { name: monthName(key) + " " + key.slice(0, 4), csv: sheetCsv(key) });
-      SHEETUI.out = r.url ? { url: r.url, title: r.name } : null;
-      SHEETUI.msg = r.url ? "" : "Se creó la hoja " + r.name + " en tu Sheet.";
+      var mcp = await window.claude.use("mcp"); if (!mcp) throw { code: "capability_disabled" };
+      var input = { title: title, textContent: "\ufeff" + sheetCsv(key), contentMimeType: "text/csv", parentId: SHEET_FOLDER }, r;
+      try { r = await mcp.callTool(SHEET_SERVER, "create_file", input, { cache: false }); }
+      catch (e1) { if (e1 && e1.code === "tool_error") { delete input.parentId; r = await mcp.callTool(SHEET_SERVER, "create_file", input, { cache: false }); } else throw e1; }
+      var p = r && r.payload; p = typeof p === "string" ? (function () { try { return JSON.parse(p); } catch (e) { return {}; } })() : (p || {});
+      var url = p.viewUrl || (p.id ? "https://docs.google.com/spreadsheets/d/" + p.id + "/edit" : "");
+      SHEETUI.out = url ? { url: url, title: title } : null;
+      SHEETUI.msg = url ? "" : "Se creó el archivo en tu Drive: " + title;
     } catch (e) { SHEETUI.msg = sheetErr(e); }
     SHEETUI.xbusy = false; render();
   }
-  window.ZW && (window.ZW.rerender = function () { render(); });
   function sheetAct(a) {
     if (a === "out") { sheetExport(); return; }
-    if (a === "cfgput") { cfgRun("put"); return; }
-    if (a === "cfgget") { cfgRun("get"); return; }
     if (a === "run") { sheetRun(false); return; }
     if (a === "no") { SHEETUI.plan = null; SHEETUI.msg = "Cancelado, no cambié nada."; render(); return; }
     if (a === "ok" && SHEETUI.plan) { sheetApply(SHEETUI.plan); }
@@ -3396,7 +3236,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       if (done || ++tries > 90) { clearInterval(t); return; }
       if (!SYNC.ready || !SYNC.canWrite || SYNC.timer || SYNC.busy || formOpen()) return;
       done = true; clearInterval(t);
-      if (!(window.ZW && ZW.bridgeCfg && ZW.bridgeCfg.url)) return;
+      try { var u = await window.claude.use("user"); if (!u || !u.isOwner || !u.isOwner()) return; } catch (e) { return; }
       sheetRun(true);
     }, 1500);
   })();
