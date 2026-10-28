@@ -471,7 +471,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v31</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v32</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -887,7 +887,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
   function monthbar(extra) {
     var k = ui.monthKey, opts = '<option value="__prev">＋ Agregar mes anterior</option>' + monthKeys().map(function (m) { return '<option value="' + m + '"' + (m === k ? " selected" : "") + ">" + esc(monthLabel(m)) + "</option>"; }).join("") + '<option value="__next">＋ Agregar mes siguiente</option>';
-    return '<div class="hero-top"><div class="monthnav"><button class="iconbtn" data-act="prev" aria-label="Mes anterior"' + (k <= FIRST_KEY ? " disabled" : "") + ">" + IL + '</button><select class="mpick" id="m-pick" aria-label="Elegir mes">' + opts + '</select><button class="iconbtn" data-act="next" aria-label="Mes siguiente"' + (k >= LAST_KEY ? " disabled" : "") + ">" + IR + '</button></div><div class="actions">' + (extra || "") + (state.closed[k] ? '<span class="tagchip">Cerrado</span><button class="btn small" type="button" data-act="reopen-month">Reabrir</button>' : "") + '<button class="btn small" type="button" data-act="close-month">Cerrar mes</button><button class="btn small" type="button" data-act="add-month">' + IPLUS + "Agregar mes</button></div></div>";
+    return '<div class="hero-top"><div class="monthnav"><button class="iconbtn" data-act="prev" aria-label="Mes anterior"' + (k <= FIRST_KEY ? " disabled" : "") + ">" + IL + '</button><select class="mpick" id="m-pick" aria-label="Elegir mes">' + opts + '</select><button class="iconbtn" data-act="next" aria-label="Mes siguiente"' + (k >= LAST_KEY ? " disabled" : "") + ">" + IR + '</button></div><div class="actions">' + (extra || "") + tutBtn() + (state.closed[k] ? '<span class="tagchip">Cerrado</span><button class="btn small" type="button" data-act="reopen-month">Reabrir</button>' : "") + '<button class="btn small" type="button" data-act="close-month">Cerrar mes</button><button class="btn small" type="button" data-act="add-month">' + IPLUS + "Agregar mes</button></div></div>";
   }
   function xlsxBtn() { return EXPORT_TABS[ui.tab] ? '<button class="btn" data-act="xlsx" id="btn-xlsx" type="button">' + IDL + "Descargar Excel</button>" : ""; }
   function statusP() { return '<p class="status ' + ui.kind + '" role="status" aria-live="polite">' + esc(ui.msg) + (ui.undo ? ' <button class="linkbtn" type="button" data-act="undo">Deshacer</button>' : "") + "</p>"; }
@@ -1708,12 +1708,12 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   });
 
   /* ----- Botón de tutorial en cada sección ----- */
-  var TUTMAP = { inicio: "Así funciona", anio: "Meses, consejos", consejos: "Meses, consejos", gastos: "Agrega un gasto", cuotas: "Compras en cuotas", tarjetas: "Agrega tus tarjetas", ingresos: "Registra los ingresos", dividir: "Quién le debe", eventos: "Eventos", calc: "Así funciona", ajustes: "Elige cómo" };
-  function tutIdx(tab) { var key = TUTMAP[tab]; if (tab === "eventos" && ui.ev) { var e0 = evOf(ui.ev); if (e0 && e0.kind === "rest") key = "Cuenta de restaurante"; } for (var i = 0; i < STEPS.length; i++) if (key && STEPS[i].t.indexOf(key) === 0) return i; return 0; }
-  function tutBtn() { return ui.tab === "tutorial" ? "" : '<div class="tutrow"><button class="btn small" type="button" data-tut="1">❓ Tutorial de esta sección</button></div>'; }
+  function tutBtn() { return ui.tab === "tutorial" ? "" : '<button class="btn small" type="button" data-tut="1">❓ Tutorial</button>'; }
+  function tutTop(h) { return h.indexOf("data-tut=") >= 0 || ui.tab === "tutorial" ? h : '<div class="tutrow">' + tutBtn() + "</div>" + h; }
   document.addEventListener("click", function (e) {
     var b = e.target.closest && e.target.closest("[data-tut]"); if (!b) return;
-    var i = tutIdx(ui.tab); ui.tab = "tutorial"; ui.step = i; ui.form = ""; ui.edit = null; render(); window.scrollTo(0, 0);
+    var id = ui.tab; if (id === "eventos") id = "eventos";
+    TUT.sec = TSECS.some(function (S) { return S.id === id; }) ? id : "todo"; ui.tab = "tutorial"; ui.form = ""; ui.edit = null; render(); window.scrollTo(0, 0);
   });
 
   /* ----- Dictar un gasto: intérprete de la frase (sin IA, solo reglas) ----- */
@@ -1880,15 +1880,36 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     { t: "Dictar un gasto por voz", go: ["inicio:add", "Probar el dictado"], b: ["En Inicio o Gastos toca \"🎤 Dictar\" (se abre el formulario y empieza a escuchar). La primera vez el navegador pide permiso para el micrófono: acepta.", "Di todo en una frase, por ejemplo: \"gasté quince mil en McDonald's con la Visa Galicia\". También entiende \"veinte lucas\", \"45 mil 500\", \"ayer\", \"en 6 cuotas\", \"de los dos\" o el nombre de quien lo gastó.", "La app rellena monto, descripción, categoría, tarjeta, de quién y fecha, y te cuenta qué entendió y qué falta. Nada se guarda solo: revisa y toca Guardar.", "Funciona mejor en Chrome y Android. Si tu navegador no dicta, escribe la frase en el cuadro (o usa el micrófono del teclado) y toca Aplicar. No gasta datos de IA: la frase se interpreta dentro de la app."] },
     { t: "Meses, consejos y Excel", go: ["consejos", "Ver consejos"], b: ["\"Cerrar mes\" abre el siguiente y trae gastos fijos, alquiler, servicios y suscripciones; las cuotas pasan solas. \"Agregar mes\" solo suma un mes vacío; el selector de arriba te deja saltar entre meses.", "Consejos analiza el mes que estés viendo, para una persona o para dos según lo que elegiste.", "\"Descargar Excel\" exporta justo lo que ves en pantalla y siempre te pide confirmación antes de guardar."] }
   ];
-  function viewTutorial() {
-    var s = STEPS[ui.step];
-    return '<section class="card"><div class="sec-head"><div><h2>Tutorial</h2><p class="sec-sub">Paso ' + (ui.step + 1) + " de " + STEPS.length + "</p></div></div>" +
-      '<div class="stepbar" aria-hidden="true">' + STEPS.map(function (x, i) { return '<i class="' + (i <= ui.step ? "on" : "") + '"></i>'; }).join("") + "</div>" +
-      '<h3 style="margin-top:18px;font-size:1.25rem">' + esc(s.t) + '</h3><ul class="steplist">' + s.b.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul><div class="actions" style="margin-top:18px">' +
-      '<button class="btn" type="button" data-step="-1"' + (ui.step === 0 ? " disabled" : "") + ">Anterior</button>" +
-      (ui.step < STEPS.length - 1 ? '<button class="btn primary" type="button" data-step="1">Siguiente</button>' : '<button class="btn primary" type="button" data-go="inicio">Terminar</button>') +
-      '<button class="btn" type="button" data-go="' + s.go[0] + '">' + esc(s.go[1]) + '</button><button class="btn" type="button" data-onb="open">Ver la bienvenida otra vez</button></div></section>';
+  var TUT = { sec: "todo" };
+  var TSECS = [
+    { id: "inicio", n: "Inicio", go: "inicio", what: "Es la pantalla principal: te dice en una mirada cómo vas este mes.", b: ["Arriba ves cuánto has gastado este mes y cuánto te queda.", "Abajo ves en qué se te va la plata (supermercado, comida, servicios…) con gráficos fáciles.", "Con el botón \"Agregar gasto\" anotas algo que pagaste, sin salir de esta pantalla.", "Si algo está en rojo, es una señal de que te estás pasando."] },
+    { id: "gastos", n: "Gastos", go: "gastos", what: "Es la lista de todo lo que pagaste, como un cuaderno de cuentas.", b: ["Toca \"Agregar gasto\", escribe cuánto fue y en qué. La app elige la categoría sola (la puedes cambiar).", "\"Para pagar en\": elige \"Este mes\" si ya lo pagaste, o \"Próximo mes\" si lo vas a pagar después (por ejemplo, con el resumen de la tarjeta). Siempre sale marcado el mes siguiente; lo cambias si quieres.", "Puedes ordenar la lista por fecha, monto o tipo de gasto tocando el título de la columna.", "Para varios gastos a la vez, toca \"Seleccionar\", marca los que quieras y borra o cambia todos juntos.", "El lápiz corrige un gasto; la X lo borra y siempre puedes tocar \"Deshacer\".", "\"Cerrar mes\" pasa al mes siguiente y trae solo los gastos que se repiten (alquiler, servicios, suscripciones).", "\"Descargar Excel\" te baja lo que estás viendo en una planilla."] },
+    { id: "voz", n: "Dictar por voz", go: "gastos:add", what: "En vez de escribir, hablas y la app llena el gasto por ti.", b: ["Toca \"🎤 Dictar\" (o \"Hablar\" dentro de \"Agregar gasto\"). La primera vez el celular pide permiso para el micrófono: dile que sí.", "Di todo en una frase. Por ejemplo: \"gasté quince mil en McDonald's con la Visa Galicia\".", "Entiende cosas como \"veinte lucas\", \"ayer\", \"en 6 cuotas\" o \"de los dos\".", "La app llena el formulario y te cuenta qué entendió. Revisa y toca \"Guardar gasto\": nada se guarda solo.", "Si tu celular no deja dictar, escribe la frase en el cuadro y toca \"Aplicar\"."] },
+    { id: "tarjetas", n: "Tarjetas", go: "tarjetas", what: "Aquí van tus formas de pagar: tarjetas, efectivo, billetera.", b: ["Cada tarjeta muestra cuánto llevas gastado con ella este mes.", "Para crear una, toca agregar y ponle un nombre fácil de reconocer (ej. \"Visa Galicia Ed\").", "Puedes anotar el día que cierra y el día que vence, para acordarte de pagarla.", "También puedes crear \"Efectivo\" o \"Gasto Fijo\" para lo que no es tarjeta.", "Nunca escribas el número de la tarjeta: la app no lo necesita y no lo acepta."] },
+    { id: "cuotas", n: "Cuotas", go: "cuotas", what: "Si compraste algo \"en cuotas\", aquí ves cuánto te falta por pagar.", b: ["Una compra en cuotas es pagar un poco cada mes en lugar de todo de una vez.", "Al agregar el gasto con una tarjeta de crédito, aparece \"¿En cuántas cuotas?\". Elige cuántas.", "\"Sin interés\" significa que no te cobran de más. Si te cobran extra, desmárcalo y pon el porcentaje.", "En esta pestaña ves cuánto debes en total, cuántas cuotas faltan y cuándo termina cada compra."] },
+    { id: "ingresos", n: "Ingresos", go: "ingresos:add", what: "Lo que entra: tu sueldo y cualquier otra plata que recibes.", b: ["Toca agregar y anota el monto y de dónde viene (sueldo, trabajo extra, alquiler…).", "Si son dos, marca de quién es cada ingreso.", "Con esto la app sabe cuánto te sobra cada mes y cuánto estás ahorrando.", "Los consejos te avisan cuando ya gastaste la mitad, tres cuartos o casi todo lo que entra."] },
+    { id: "dividir", n: "Dividir", go: "dividir", what: "Solo aparece si usan la app entre dos o más. Dice quién le debe a quién.", b: ["En cada tarjeta marcas quién la pagó este mes.", "La app suma lo que le toca a cada uno y te dice cuánto debe pasarle uno al otro.", "Al agregar un gasto marcas si es de uno, del otro o de los dos mitad y mitad.", "Para ver lo que le tocó a cada persona, mira \"Gasto por participante\"."] },
+    { id: "eventos", n: "Eventos y restaurante", go: "eventos", what: "Para gastos de un grupo: una cena, un asado, un viaje, un cumpleaños.", b: ["Toca \"Nuevo evento\", ponle nombre y anota quiénes van.", "Cada vez que alguien compra algo, lo anotas y dices para quiénes fue.", "La app dice cuánto puso cada uno, cuánto le tocaba y quién le paga a quién.", "\"Cuenta de restaurante\": dices cuántas son las personas y agrupas por familia. Opción 1: escribes cuántos hay en cada grupo (ejemplo 5,1 = una familia de 5 y uno solo). Opción 2: cada uno por separado.", "Anotas cada plato y a qué grupo le tocó. La propina arranca en 10% y la puedes cambiar.", "Al final ves cuánto paga cada grupo con y sin propina, y puedes compartirlo por WhatsApp o anotar tu parte como gasto."] },
+    { id: "consejos", n: "Consejos", go: "consejos", what: "La app mira tus números y te dice, en palabras simples, cómo ordenarte.", b: ["Te avisa si estás gastando mucho en algo.", "Te muestra qué puedes recortar y cuánto podrías ahorrar.", "Cambian según el mes que estés mirando."] },
+    { id: "anio", n: "Resumen del año", go: "anio", what: "Todo el año en una sola pantalla.", b: ["Ves mes por mes cuánto entró y cuánto salió.", "Ves en qué categorías gastaste más durante el año.", "Sirve para darte cuenta de patrones: qué meses cuestan más y por qué."] },
+    { id: "calc", n: "Calculadora", go: "calc", what: "Una calculadora común, a mano dentro de la app.", b: ["Suma, resta, multiplica, divide y calcula porcentajes.", "Útil para repartir una cuenta o calcular una propina sin salir de la app."] },
+    { id: "ajustes", n: "Ajustes", go: "ajustes", what: "Aquí cambias cómo funciona la app.", b: ["Eliges si la usas solo, de a dos o en grupo.", "Eliges el país y la moneda.", "Agregas o cambias categorías, tarjetas y nombres de las personas.", "Puedes bajar una copia de tus datos y recuperarla después.", "En \"Hoja de Google\" conectas tu planilla para traer o enviar los datos del mes y la configuración."] },
+    { id: "instalar", n: "Instalar en el celular", go: "ajustes", what: "Para abrirla como una app más, con su ícono.", b: ["Android: abre el link en Chrome, toca el menú (tres puntos) y elige \"Instalar app\".", "iPhone: abre el link en Safari, toca Compartir y elige \"Agregar a pantalla de inicio\".", "La primera vez entra con tu correo y contraseña. Después entra sola."] }
+  ];
+  function tutSecBody(S) {
+    return '<section class="card tutsec"><h3 style="font-size:1.2rem">' + esc(S.n) + '</h3><p class="sec-sub"><b>¿Para qué sirve?</b> ' + esc(S.what) + '</p><ul class="steplist">' + S.b.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + '</ul>' +
+      '<div class="actions" style="margin-top:12px"><button class="btn small" type="button" data-go="' + S.go + '">Ir a ' + esc(S.n) + "</button></div></section>";
   }
+  function viewTutorial() {
+    var chips = '<button class="btn small' + (TUT.sec === "todo" ? " primary" : "") + '" type="button" data-tutsec="todo">Ver todo</button>' + TSECS.map(function (S) { return '<button class="btn small' + (TUT.sec === S.id ? " primary" : "") + '" type="button" data-tutsec="' + S.id + '">' + esc(S.n) + "</button>"; }).join("");
+    var list = TUT.sec === "todo" ? TSECS : TSECS.filter(function (S) { return S.id === TUT.sec; });
+    return '<section class="card"><div class="sec-head"><div><h2>Tutorial</h2><p class="sec-sub">Explicado fácil, sin palabras raras. Elige \"Ver todo\" o solo la parte que necesitas.</p></div></div><div class="actions tutchips">' + chips + "</div></section>" + list.map(tutSecBody).join("") +
+      '<div class="actions" style="margin:14px 0"><button class="btn" type="button" data-onb="open">Ver la bienvenida otra vez</button></div>';
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-tutsec]"); if (!b) return;
+    TUT.sec = b.getAttribute("data-tutsec"); render(); window.scrollTo(0, 0);
+  });
 
   /* ----- Ajustes ----- */
 
@@ -1909,8 +1930,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v31";
+  var APP_VERSION = "v32";
   var CHANGELOG = [
+    ["v32", "Tutorial simple por sección."],
     ["v31", "Tutorial por sección y núcleos por cantidad."],
     ["v30", "Para pagar en: mes siguiente por defecto."],
     ["v29", "Dictar gastos por voz o texto."],
@@ -2241,7 +2263,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   function render() {
     if (ui.tab === "dividir" && !dos()) ui.tab = "inicio";
     $("tabs").innerHTML = tabsOrdered().filter(function (t) { return t[0] !== "dividir" || dos(); }).map(function (t) { return '<button class="tab" type="button" data-tab="' + t[0] + '"' + (ui.tab === t[0] ? ' aria-current="page"' : "") + ">" + tabIcon(t[0]) + t[1] + "</button>"; }).join("");
-    $("screen").innerHTML = tutBtn() + VIEWS[ui.tab]();
+    $("screen").innerHTML = tutTop(VIEWS[ui.tab]());
     if (ui.form === "cierre") { $("screen").innerHTML = '<section class="card" id="form-card">' + closeForm() + "</section>"; }
     else if (ui.form || ui.evform) {
       var af = $("screen").querySelector('form[data-form="gasto"],form[data-form="ingreso"],form[data-form="tarjeta"],form[data-form="evento"],form[data-form="evitem"]');
