@@ -118,7 +118,7 @@
     fb.initializeApp(cfg); AUTH = fb.auth(); DB = fb.firestore();
     try { DB.enablePersistence({ synchronizeTabs: true }).catch(function () {}); } catch (e) {}
     AUTH.onAuthStateChanged(function (u) {
-      if (u) { ZW.email = u.email; if (gate) gate.hidden = true; resolveUser(u); loadBridge(); }
+      if (u) { ZW.email = u.email; if (gate) gate.hidden = true; resolveUser(u); loadBridge(); if (ZW.startNotify) ZW.startNotify(DB); }
       else { ZW.email = null; showGate("", true); }
     });
   }
@@ -195,6 +195,119 @@
     }
   };
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot); else boot();
+})();
+(function () {
+  var ZW = window.ZW; if (!ZW) return;
+  var NAMES = { "eduardocarpio89@gmail.com": "Eduardo", "zhernandez0190@gmail.com": "Zaydi" };
+  var T0 = Date.now(), Q = [], timer = null, DBN = null, started = false;
+  ZW.ntf = { toast: true, browser: false, email: true, emails: Object.keys(NAMES) };
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function money(t) {
+    if (t.usd != null) return "US$ " + Number(t.usd).toLocaleString("es-AR", { maximumFractionDigits: 2 });
+    return "$ " + Number(t.amt || 0).toLocaleString("es-AR", { minimumFractionDigits: Number(t.amt) % 1 ? 2 : 0, maximumFractionDigits: 2 });
+  }
+  function who(by) { return !by ? "" : by === ZW.email ? "" : (NAMES[by] || by.split("@")[0]); }
+  function describe(it) {
+    var v = it.v, o; try { o = JSON.parse(v.j); } catch (e) { return null; }
+    var by = who(v.by), tail = by ? " · " + by : "";
+    if (it.c === "tx") return { icon: "💸", title: "Gasto registrado", line: money(o) + " – " + (o.desc || "sin nombre") + tail, mail: "Gasto registrado: " + money(o) + " – " + (o.desc || "sin nombre") };
+    var rest = o.kind === "rest";
+    return { icon: rest ? "🍽" : "📅", title: rest ? "Cuenta de restaurante registrada" : "Evento registrado", line: (o.name || "sin nombre") + tail, mail: (rest ? "Cuenta de restaurante registrada: " : "Evento registrado: ") + (o.name || "sin nombre") };
+  }
+  /* ---- avisos en pantalla ---- */
+  function toast(icon, title, line) {
+    var box = document.getElementById("zwtoasts");
+    if (!box) {
+      var st = document.createElement("style");
+      st.textContent = "#zwtoasts{position:fixed;left:12px;right:12px;bottom:76px;z-index:9000;display:grid;gap:8px;justify-items:center;pointer-events:none}.zwt{pointer-events:auto;max-width:420px;width:100%;box-sizing:border-box;background:var(--surface,#17211E);color:var(--ink,#E8EFEC);border:1px solid var(--line,#2A3935);border-left:4px solid #2BD27F;border-radius:12px;padding:10px 14px;box-shadow:0 8px 24px rgba(0,0,0,.35);font:14px/1.35 system-ui,sans-serif;cursor:pointer}.zwt b{display:block}";
+      document.head.appendChild(st); box = document.createElement("div"); box.id = "zwtoasts"; document.body.appendChild(box);
+    }
+    var n = document.createElement("div"); n.className = "zwt"; n.innerHTML = "<b>" + esc(icon + " " + title) + "</b>" + esc(line);
+    n.onclick = function () { n.remove(); }; box.appendChild(n); setTimeout(function () { n.remove(); }, 7000);
+  }
+  function sysNotify(title, body) {
+    if (!ZW.ntf.browser || !("Notification" in window) || Notification.permission !== "granted" || !document.hidden) return;
+    try {
+      if (navigator.serviceWorker && navigator.serviceWorker.ready) navigator.serviceWorker.ready.then(function (r) { r.showNotification(title, { body: body, icon: "icons/icon-192.png", tag: "zwallet" }); });
+      else new Notification(title, { body: body, icon: "icons/icon-192.png" });
+    } catch (e) {}
+  }
+  function mail(subject, lines) {
+    var N = ZW.ntf; if (!N.email || !ZW.bridgeCfg || !N.emails || !N.emails.length) return Promise.resolve(false);
+    var body = lines.join("\n") + "\n\nRegistrado por: " + (NAMES[ZW.email] || ZW.email) + "\nAbrir zwallet: " + location.origin + location.pathname.replace(/[^/]*$/, "");
+    return ZW.bridge("notify", { to: N.emails, subject: "zwallet · " + subject, body: body }).then(function () { return true; }, function () { return false; });
+  }
+  function flushQ() {
+    timer = null; var items = Q.splice(0).map(function (it) { return { it: it, d: describe(it) }; }).filter(function (x) { return x.d; });
+    if (!items.length) return;
+    var mine = items.filter(function (x) { return x.it.local; }), theirs = items.filter(function (x) { return !x.it.local; });
+    function show(list, local) {
+      if (!list.length) return;
+      if (list.length > 3) {
+        var n = list.length, kind = list.every(function (x) { return x.it.c === "tx"; }) ? "gastos" : "registros";
+        if (ZW.ntf.toast) toast("🧾", n + " " + kind + " registrados", local ? "Por ejemplo: " + list[0].d.line : list[0].d.line);
+        if (!local) sysNotify("zwallet", n + " " + kind + " registrados");
+        else mail(n + " " + kind + " registrados", list.slice(0, 15).map(function (x) { return "• " + x.d.mail; }));
+        return;
+      }
+      list.forEach(function (x) {
+        if (ZW.ntf.toast) toast(x.d.icon, x.d.title, x.d.line);
+        if (!local) sysNotify(x.d.title, x.d.line); else mail(x.d.mail, [x.d.mail]);
+      });
+    }
+    show(mine, true); show(theirs, false);
+  }
+  function watch(db) {
+    ["tx", "events"].forEach(function (c) {
+      var first = true;
+      db.collection(c).onSnapshot(function (snap) {
+        if (first) { first = false; return; }
+        snap.docChanges().forEach(function (ch) {
+          if (ch.type !== "added") return;
+          var v = ch.doc.data(); if (!v || typeof v.j !== "string" || !(v.at >= T0 - 5000)) return;
+          Q.push({ c: c, v: v, local: ch.doc.metadata.hasPendingWrites });
+        });
+        if (Q.length && !timer) timer = setTimeout(flushQ, 1500);
+      }, function () {});
+    });
+  }
+  function loadCfg(db) {
+    return db.doc("cfg/notify").get().then(function (d) { if (d.exists) { var v = d.data(); ["toast", "browser", "email"].forEach(function (k) { if (typeof v[k] === "boolean") ZW.ntf[k] = v[k]; }); if (Array.isArray(v.emails) && v.emails.length) ZW.ntf.emails = v.emails; } }).catch(function () {});
+  }
+  function saveCfg() {
+    if (!DBN) return; var N = ZW.ntf;
+    DBN.doc("cfg/notify").set({ toast: N.toast, browser: N.browser, email: N.email, emails: N.emails, at: Date.now() }).catch(function () {});
+  }
+  ZW.startNotify = function (db) { if (started) return; started = true; DBN = db; loadCfg(db).then(function () { watch(db); if (ZW.rerender) ZW.rerender(); }); };
+  ZW.notifyHtml = function () {
+    var N = ZW.ntf, perm = "Notification" in window ? Notification.permission : "unsupported", br = !!(ZW.bridgeCfg && ZW.bridgeCfg.url);
+    return '<section class="card"><h2>Avisos</h2><p class="sec-sub">Te avisan cuando se registra un gasto o un evento, con el monto y el nombre.</p>' +
+      '<div class="checks"><label><input type="checkbox" data-ntf="toast"' + (N.toast ? " checked" : "") + '> Aviso dentro de la app</label></div>' +
+      '<div class="checks"><label><input type="checkbox" data-ntf="browser"' + (N.browser && perm === "granted" ? " checked" : "") + (perm === "unsupported" ? " disabled" : "") + '> Aviso del navegador o del celular (cuando la app está abierta en segundo plano)</label></div>' +
+      (perm === "denied" ? '<p class="note">El navegador tiene los avisos bloqueados: actívalos en el candado de la barra de direcciones.</p>' : "") +
+      '<div class="checks"><label><input type="checkbox" data-ntf="email"' + (N.email ? " checked" : "") + '> Aviso por correo a:</label></div>' +
+      '<div class="field"><input id="ntf-emails" data-ntf="emails" autocomplete="off" value="' + esc((N.emails || []).join(", ")) + '" aria-label="Correos que reciben los avisos"></div>' +
+      '<p class="note">' + (br ? "Los correos salen desde tu Google Sheet conectado." : "Para el correo primero conecta tu Google Sheet (arriba).") + ' Separa los correos con coma.</p>' +
+      '<div class="actions"><button class="btn small" type="button" data-ntf="test">Enviar aviso de prueba</button></div><p class="note" id="ntf-msg" aria-live="polite"></p></section>';
+  };
+  function msg(t) { var m = document.getElementById("ntf-msg"); if (m) m.textContent = t; }
+  document.addEventListener("change", function (e) {
+    var t = e.target; if (!t.getAttribute || !t.hasAttribute("data-ntf")) return; var k = t.getAttribute("data-ntf"), N = ZW.ntf;
+    if (k === "toast" || k === "email") { N[k] = t.checked; saveCfg(); }
+    else if (k === "emails") { var l = t.value.split(/[,;\s]+/).filter(function (x) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(x); }).slice(0, 5); if (l.length) N.emails = l; saveCfg(); t.value = N.emails.join(", "); }
+    else if (k === "browser") {
+      if (!t.checked) { N.browser = false; saveCfg(); return; }
+      if (!("Notification" in window)) { t.checked = false; return; }
+      Notification.requestPermission().then(function (p) { N.browser = p === "granted"; t.checked = N.browser; saveCfg(); if (ZW.rerender) ZW.rerender(); });
+    }
+  });
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest('button[data-ntf="test"]'); if (!b) return;
+    toast("🔔", "Aviso de prueba", "Así se verá cuando se registre un gasto.");
+    sysNotify("zwallet", "Aviso de prueba");
+    if (ZW.ntf.email) { msg("Enviando correo de prueba…"); mail("Aviso de prueba", ["Este es un aviso de prueba de zwallet."]).then(function (ok) { msg(ok ? "Correo de prueba enviado a " + ZW.ntf.emails.join(", ") + "." : "No se pudo enviar el correo: revisa que el Sheet esté conectado y que hayas actualizado el script (mira el README)."); }); }
+    else msg("Aviso de prueba mostrado.");
+  });
 })();
 
 </script>
@@ -580,7 +693,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v34</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v35</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -2015,6 +2128,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     { id: "anio", n: "Resumen del año", go: "anio", what: "Todo el año en una sola pantalla.", b: ["Ves mes por mes cuánto entró y cuánto salió.", "Ves en qué categorías gastaste más durante el año.", "Sirve para darte cuenta de patrones: qué meses cuestan más y por qué."] },
     { id: "calc", n: "Calculadora", go: "calc", what: "Una calculadora común, a mano dentro de la app.", b: ["Suma, resta, multiplica, divide y calcula porcentajes.", "Útil para repartir una cuenta o calcular una propina sin salir de la app."] },
     { id: "ajustes", n: "Ajustes", go: "ajustes", what: "Aquí cambias cómo funciona la app.", b: ["Eliges si la usas solo, de a dos o en grupo.", "Eliges el país y la moneda.", "Agregas o cambias categorías, tarjetas y nombres de las personas.", "Puedes bajar una copia de tus datos y recuperarla después.", "En \"Hoja de Google\" conectas tu planilla para traer o enviar los datos del mes y la configuración."] },
+    { id: "avisos", n: "Avisos", go: "ajustes", what: "La app te avisa cuando alguien registra un gasto o un evento, para que los dos estén enterados.", b: ["Cuando se anota un gasto, sale un aviso con el monto y el nombre, por ejemplo: \"$ 15.000 – McDonald's\". Si lo anotó la otra persona, también dice quién fue.", "También avisa cuando se crea un evento o una cuenta de restaurante.", "Hay tres tipos de aviso y los activas o desactivas en Ajustes → Avisos: dentro de la app, del navegador o celular (con la app abierta en segundo plano) y por correo a los dos.", "El correo sale desde tu Hoja de Google conectada. Si todavía no la conectaste, los otros avisos funcionan igual.", "Usa \"Enviar aviso de prueba\" para comprobar que llega todo."] },
     { id: "instalar", n: "Instalar en el celular", go: "ajustes", what: "Para abrirla como una app más, con su ícono.", b: ["Android: abre el link en Chrome, toca el menú (tres puntos) y elige \"Instalar app\".", "iPhone: abre el link en Safari, toca Compartir y elige \"Agregar a pantalla de inicio\".", "La primera vez entra con tu correo y contraseña. Después entra sola."] }
   ];
   function tutSecBody(S) {
@@ -2051,8 +2165,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v34";
+  var APP_VERSION = "v35";
   var CHANGELOG = [
+    ["v35", "Avisos: al registrar un gasto o evento, aviso en la app, en el navegador y por correo a los dos."],
     ["v34", "Gastos: los montos de la tabla se ven con 2 decimales."],
     ["v33", "Decimales con punto o coma al escribir montos en la PC."],
     ["v32", "Tutorial rehecho en lenguaje simple: ver todo o por sección, y botón Tutorial en cada pestaña."],
@@ -2312,7 +2427,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var cfg = '<h3 style="margin-top:18px">Configuración desde el Sheet</h3><p class="sec-sub">Ajustes, tarjetas y categorías también se pueden editar en la hoja zwallet_Config del Sheet.</p>' +
       '<div class="actions"><button class="btn" type="button" data-act="sheet:cfgput"' + (can ? "" : " disabled") + '>Enviar configuración al Sheet</button><button class="btn" type="button" data-act="sheet:cfgget"' + (can ? "" : " disabled") + '>Traer configuración del Sheet</button></div>' +
       (SHEETUI.cfgmsg ? '<p class="status ok" role="status">' + esc(SHEETUI.cfgmsg) + "</p>" : "");
-    return '<section class="card">' + conn + (ok ? imp + exp + cfg : "") + "</section>";
+    return '<section class="card">' + conn + (ok ? imp + exp + cfg : "") + "</section>" + (window.ZW && ZW.notifyHtml ? ZW.notifyHtml() : "");
   }
   function cfgNum(n) { return n == null || n === "" ? "" : String(n).replace(".", ","); }
   function cfgBuild() {
@@ -3128,7 +3243,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     try {
       for (var i = 0; i < ops.length; i++) {
         var o = ops[i], ref = SYNC.db.doc(o[1]);
-        if (o[0] === "set") { await ref.set({ j: o[2], at: Date.now() }); SYNC.last[o[1]] = o[2]; }
+        if (o[0] === "set") { await ref.set({ j: o[2], at: Date.now(), by: (window.ZW && window.ZW.email) || "" }); SYNC.last[o[1]] = o[2]; }
         else { await ref.delete(); delete SYNC.last[o[1]]; }
       }
     } catch (e) { fail = e; }
