@@ -4,6 +4,60 @@
 <meta name="theme-color" content="#0B0F0E"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="zwallet Demo"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="../icons/favicon.png"><link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
 <style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}@media (min-width:700px){html:not([data-tabs="bottom"]) .tabs{flex-wrap:wrap;overflow-x:visible}}</style>
+<style>.gctl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0 4px; }
+.gctl .segs { display: inline-flex; gap: 6px; }
+.gsl { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); font-size: .9rem; }
+.gsl select { font: inherit; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.gtwrap { overflow-x: auto; margin-top: 12px; border: 1px solid var(--line); border-radius: 14px; }
+.gtbl { width: 100%; border-collapse: collapse; min-width: 700px; font-size: .93rem; }
+.gtbl th, .gtbl td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.gtbl td.gd { white-space: normal; min-width: 170px; }
+.gtbl thead th { position: sticky; top: 0; background: color-mix(in srgb, var(--surface) 92%, var(--bg)); font-size: .78rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); }
+.gtbl .thb { all: unset; cursor: pointer; font: inherit; text-transform: inherit; letter-spacing: inherit; color: inherit; }
+.gtbl .thb:hover { color: var(--ink); }
+.gtbl tbody tr:nth-child(even) { background: color-mix(in srgb, var(--bg) 55%, transparent); }
+.gtbl tbody tr:hover { background: color-mix(in srgb, var(--c1) 8%, var(--surface)); }
+.gtbl tbody tr.on { background: color-mix(in srgb, var(--c1) 16%, var(--surface)); box-shadow: inset 3px 0 0 var(--c1); }
+.gtbl .r { text-align: right; }
+.gtbl .ck { width: 34px; padding-right: 0; }
+.gtbl input[type=checkbox] { width: 18px; height: 18px; margin: 0; accent-color: var(--c1); }
+.gtbl .ac { text-align: right; white-space: nowrap; }
+.gtbl tfoot td { font-weight: 700; border-bottom: 0; background: color-mix(in srgb, var(--surface) 92%, var(--bg)); }
+.gcat { display: inline-flex; align-items: center; gap: 7px; }
+.gtbl .ac .iconbtn { display: inline-flex; vertical-align: middle; }
+.rslist { display: grid; gap: 8px; margin-top: 12px; }
+.rsrow { display: grid; grid-template-columns: 28px minmax(0,1.2fr) minmax(0,.9fr) minmax(0,1fr); gap: 8px; align-items: center; }
+.rsrow input, .rsrow select { font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-width: 0; width: 100%; box-sizing: border-box; }
+.rsn { color: var(--ink-2); text-align: center; }
+.rsadd { display: grid; grid-template-columns: minmax(0,2fr) minmax(0,.7fr) minmax(0,1fr) auto; gap: 10px; align-items: end; }
+.rsgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 8px; }
+.rsg { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.rsg.on { border-color: var(--c1); background: color-mix(in srgb, var(--c1) 12%, var(--surface)); }
+.rsgn { font-size: .88rem; overflow-wrap: anywhere; }
+.rsstep { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.rschk { display: inline-flex; align-items: center; gap: 5px; margin-right: 10px; }
+@media (max-width: 640px) { .rsrow { grid-template-columns: 24px 1fr 1fr; } .rsrow input:last-child { grid-column: 2 / -1; } .rsadd { grid-template-columns: 1fr 1fr; } .rsadd .btn { grid-column: 1 / -1; } }
+.rsl { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 8px; }
+.rsli { display: grid; grid-template-columns: minmax(0,1.4fr) minmax(0,1fr) minmax(0,1fr); gap: 10px; align-items: center; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+.rsname { font-weight: 700; overflow-wrap: anywhere; }
+.rsnum { display: grid; text-align: right; font-variant-numeric: tabular-nums; }
+.rsnum small { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; color: var(--ink-2); }
+.rs-sin { color: var(--ink-2); }
+.rs-con b { color: var(--c1); font-size: 1.05rem; }
+.rs-con { background: color-mix(in srgb, var(--c1) 12%, var(--surface)); border-radius: 10px; padding: 4px 10px; }
+.rstot { margin-top: 12px; border-top: 2px solid var(--ink); padding-top: 8px; display: grid; gap: 4px; }
+.rstr { display: flex; justify-content: space-between; gap: 12px; }
+.rs-tipr { color: var(--ink-2); }
+.rs-grand { font-size: 1.15rem; padding-top: 6px; border-top: 1px dashed var(--line); }
+.rs-grand b { color: var(--c1); }
+.rsgn { overflow-wrap: normal; word-break: normal; hyphens: none; }
+.rsgrid { grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); }
+.rsadd input, #rs-tipo, #rs-tipf, #rs-tip, #rs-n { font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); width: 100%; box-sizing: border-box; }
+.vcbox { border: 1px dashed var(--line); border-radius: 12px; padding: 10px; margin-bottom: 14px; background: var(--surface); }
+.vcrow { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.vcin { flex: 1 1 200px; min-width: 0; font: inherit; padding: 9px 10px; border-radius: 10px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); box-sizing: border-box; }
+.vcmic { white-space: nowrap; }
+</style>
 <script>
 (function () {
   var ZW = window.ZW = window.ZW || {};
@@ -415,7 +469,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v27</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v29</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -860,7 +914,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       else ownerBlock = '<div class="field"><span class="lbl">¿De quién es el gasto? (se divide en partes iguales)</span><div class="checks">' + state.people.map(function (p) { return '<label><input type="checkbox" name="split" value="' + p.id + '"' + (spl.indexOf(p.id) >= 0 ? " checked" : "") + "> " + esc(p.name) + "</label>"; }).join("") + "</div></div>";
     }
     var curBlock = conv() ? '<div class="segs" role="radiogroup" aria-label="Moneda del gasto"><label class="seg"><input type="radio" name="cur" value="ars"' + (d.usd == null ? " checked" : "") + '><span>$ Pesos</span></label><label class="seg"><input type="radio" name="cur" value="usd"' + (d.usd != null ? " checked" : "") + "><span>USD con recargo " + state.usdSurcharge + "%</span></label></div>" : "";
-    return '<form class="qform" data-form="gasto" novalidate><h2>' + (t ? "Editar gasto" : "¿Qué gastaste?") + "</h2>" +
+    return '<form class="qform" data-form="gasto" novalidate><h2>' + (t ? "Editar gasto" : "¿Qué gastaste?") + "</h2>" + (t ? "" : vcPanel()) +
       '<div class="field"><label for="f-monto" id="f-monto-l">' + (t && t.inst ? "Precio total de la compra" : "Monto") + '</label><input id="f-monto" class="bigamt" name="monto" data-money="1" inputmode="decimal" autocomplete="off" placeholder="0" value="' + esc(numFmt(amtVal)) + '"></div>' + curBlock +
       '<div class="field"><label for="f-desc">Descripción</label><input id="f-desc" name="desc" autocomplete="off" placeholder="Ej: Coto, Netflix, Farmacity" value="' + esc(d.desc) + '"></div>' +
       '<div class="two"><div class="field"><label for="f-cat">Categoría</label>' + sel("f-cat", catsAZ().map(function (c) { return [c.id, c.name]; }).concat([["__new", "➕ Nueva categoría…"]]), d.cat) + '<span class="hint" id="cat-hint" hidden></span></div>' +
@@ -988,28 +1042,77 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
       var gt = groupTip(C, k);
       bottom = '<section class="card"><div class="sec-head"><div><h2>Cuentas del mes: cuánto debe pagar cada uno</h2><p class="sec-sub">Cada quien paga desde su propio ingreso. Así queda ' + esc(monthName(k)) + ".</p></div></div>" + statements +
         '<p class="note" style="margin-top:14px">Gastos compartidos del grupo: <b class="num">' + fmt(sharedT) + "</b>. " + state.people.map(function (p) { return esc(p.name) + " " + fmt(C.shr[p.id]); }).join(" · ") + "." + "</p>" +
-        '<h3 style="margin-top:20px">Resumen por tarjeta</h3>' + porMedioTabla(C, true) + '<div class="result" role="status">' + mv + '</div>' + explainHtml(C) +
+        '<h3 style="margin-top:20px">Resumen por tarjeta</h3>' + porMedioTabla(C, true) + '<div class="result" role="status">' + mv + '</div>' + shareBtn("mv") + explainHtml(C) +
         '<div class="tip ' + gt.c + '" style="margin-top:14px"><b>' + esc(gt.t) + "</b><p>" + esc(gt.b) + '</p></div><div class="actions" style="margin-top:12px"><button class="btn small" type="button" data-go="dividir">Ver detalle en Dividir</button><button class="btn small" type="button" data-go="consejos">Ver todos los consejos</button></div></section>';
     } else {
       bottom = '<section class="card"><h2>Por tarjeta y medio de pago</h2><p class="sec-sub">Cuánto te llega en ' + esc(monthName(k)) + " por cada uno.</p>" + porMedioTabla(C, false) + "</section>";
     }
-    return welcome + '<div class="actions"><button class="btn primary" type="button" data-act="add-gasto">' + IPLUS + "Agregar gasto</button>" + xlsxBtn() + "</div>" + formCard() + statusP() + nextCard() + hero + '<div class="grid2">' + cats + trend + "</div>" + bottom;
+    return welcome + '<div class="actions"><button class="btn primary" type="button" data-act="add-gasto">' + IPLUS + "Agregar gasto</button>" + '<button class="btn" type="button" data-vc="open">🎤 Dictar</button>' + xlsxBtn() + "</div>" + formCard() + statusP() + nextCard() + hero + '<div class="grid2">' + cats + trend + "</div>" + bottom;
   }
 
   /* ----- Gastos ----- */
+  var GV = { view: null, key: "recent", dir: "desc" };
+  (function () { try { var v = window.localStorage.getItem("pw_gview_v1"); if (v === "tabla" || v === "lista") GV.view = v; var s = JSON.parse(window.localStorage.getItem("pw_gsort_v1") || "null"); if (s && s.key) { GV.key = s.key; GV.dir = s.dir === "asc" ? "asc" : "desc"; } } catch (e) {} })();
+  function gvView() { return GV.view || (window.innerWidth >= 760 ? "tabla" : "lista"); }
+  function gvSave() { try { window.localStorage.setItem("pw_gview_v1", GV.view || gvView()); window.localStorage.setItem("pw_gsort_v1", JSON.stringify({ key: GV.key, dir: GV.dir })); } catch (e) {} }
+  var GSORTS = [["recent", "Último cargado"], ["date", "Fecha"], ["cat", "Tipo de gasto"], ["card", "Tarjeta"], ["desc", "Descripción"], ["amt", "Monto"]];
+  function gvSorted(list) {
+    var k = GV.key, sg = GV.dir === "asc" ? 1 : -1;
+    function cmp(a, b) {
+      var x, y, r = 0;
+      if (k === "date") r = a.date < b.date ? -1 : a.date > b.date ? 1 : 0;
+      else if (k === "amt") r = a.amt - b.amt;
+      else if (k === "cat") r = catOf(a.t.cat).name.localeCompare(catOf(b.t.cat).name, "es");
+      else if (k === "card") r = cardLabel(a.t).localeCompare(cardLabel(b.t), "es");
+      else if (k === "desc") r = String(a.t.desc).localeCompare(String(b.t.desc), "es");
+      if (r) return r * sg;
+      return a.date < b.date ? 1 : a.date > b.date ? -1 : 0;
+    }
+    if (k === "recent") return list.sort(function (a, b) { var d = state.tx.indexOf(b.t) - state.tx.indexOf(a.t); if (GV.dir === "asc") d = -d; return d || (a.date < b.date ? 1 : a.date > b.date ? -1 : 0); });
+    return list.sort(cmp);
+  }
+  function gvArrow(k) { return GV.key === k ? (GV.dir === "asc" ? " ▲" : " ▼") : ""; }
   function viewGastos() {
-    var k = ui.monthKey, T = totals(k);
-    var list = T.list.filter(function (c) { return !ui.filter || c.t.cat === ui.filter; }).sort(function (a, b) { var d = state.tx.indexOf(b.t) - state.tx.indexOf(a.t); return d || (a.date < b.date ? 1 : a.date > b.date ? -1 : 0); });
+    var k = ui.monthKey, T = totals(k), tbl = gvView() === "tabla";
+    var list = gvSorted(T.list.filter(function (c) { return !ui.filter || c.t.cat === ui.filter; }));
     var sum = list.reduce(function (s, c) { return s + c.amt; }, 0);
     var present = catsAZ().filter(function (c) { return T.by[c.id] || c.id === ui.filter; });
     var chips = '<button class="chip" type="button" data-cat="" aria-pressed="' + (ui.filter === "") + '">Todas</button>' + present.map(function (c) { return '<button class="chip" type="button" data-cat="' + c.id + '" aria-pressed="' + (ui.filter === c.id) + '"><i class="dot" style="background:' + colorOf(c) + '"></i>' + esc(c.name) + "</button>"; }).join("");
-    var rows = list.length ? list.map(function (c) {
-      var t = c.t, cat = catOf(t.cat), nextPay = t.pm > CUR_KEY;
-      return '<li class="row"' + (ui.selMode && ui.sel[t.id] ? ' style="box-shadow:inset 3px 0 0 var(--primary)"' : "") + '>' + (ui.selMode ? '<input type="checkbox" data-sel="' + t.id + '" aria-label="Marcar ' + esc(t.desc) + '"' + (ui.sel[t.id] ? " checked" : "") + ' style="width:20px;height:20px;margin:0">' : "") + '<span class="d num">' + ddmm(c.date) + '</span><span class="info"><b><span class="ce" style="background:color-mix(in srgb,' + colorOf(cat) + ' 20%, var(--surface))">' + catEmoji(cat) + '</span>' + esc(t.desc) + '</b><small><i class="dot" style="background:' + colorOf(cat) + '"></i>' + esc(cat.name) + " · " + esc(cardLabel(t)) + (dos() ? " · de " + esc(ownerLabel(t)) : "") + (c.label ? ' <span class="badge">cuota ' + c.label + (t.inst.free ? " sin interés" : " con interés") + "</span>" : "") + (nextPay ? ' <span class="badge next">Próximo a pagar</span>' : "") + (t.usd != null ? ' <span class="badge">USD ' + t.usd + "</span>" : "") + '</small></span><span class="amt num">' + fmt(c.amt) + usdLine(c.amt) + '</span><span class="actions" style="gap:0;flex-wrap:nowrap"><button class="iconbtn x" type="button" data-edit="' + t.id + '" aria-label="Editar ' + esc(t.desc) + '">' + IEDIT + '</button><button class="iconbtn x" type="button" data-del="' + t.id + '" aria-label="Eliminar ' + esc(t.desc) + '">' + IX + "</button></span></li>";
-    }).join("") : '<li class="empty">No hay movimientos para mostrar.</li>';
-    return '<section class="card"><div class="sec-head"><div><h2>Gastos de ' + esc(monthName(k)) + '</h2><p class="sec-sub">' + list.length + " movimientos a pagar este mes, total " + fmt(sum) + (conv() ? " (≈ " + usd(sum) + ")" : "") + '.</p></div><div class="actions"><button class="btn primary" type="button" data-act="add-gasto">' + IPLUS + "Agregar gasto</button>" + '<button class="btn" type="button" data-act="sel:toggle">' + (ui.selMode ? "Salir de seleccionar" : "Seleccionar") + "</button>" + xlsxBtn() + "</div></div>" +
-      '<div style="margin-top:14px">' + monthbar("") + "</div></section>" + formCard() + '<section class="card"><div class="chips" style="margin-top:0">' + chips + "</div>" + statusP() + (ui.selMode ? selBar(list) : "") + '<ul class="list' + (ui.selMode ? " selmode" : "") + '">' + rows + "</ul></section>";
+    var nsel = selCount(), selSum = 0; list.forEach(function (c) { if (ui.sel[c.t.id]) selSum += c.amt; });
+    var showBar = ui.selMode || (tbl && nsel > 0), body;
+    if (tbl) {
+      var allOn = list.length && list.every(function (c) { return ui.sel[c.t.id]; });
+      var th = function (key, label, cls) { return '<th class="' + (cls || "") + '"><button type="button" class="thb" data-gsort="' + key + '">' + label + gvArrow(key) + "</button></th>"; };
+      var trs = list.length ? list.map(function (c) {
+        var t = c.t, cat = catOf(t.cat), nextPay = t.pm > CUR_KEY, on = !!ui.sel[t.id];
+        return '<tr' + (on ? ' class="on"' : "") + '><td class="ck"><input type="checkbox" data-sel="' + t.id + '" aria-label="Marcar ' + esc(t.desc) + '"' + (on ? " checked" : "") + '></td><td class="num">' + ddmm(c.date) + '</td><td class="gd"><b>' + esc(t.desc) + "</b>" + (c.label ? ' <span class="badge">cuota ' + c.label + "</span>" : "") + (nextPay ? ' <span class="badge next">Próximo</span>' : "") + (t.usd != null ? ' <span class="badge">USD ' + t.usd + "</span>" : "") + '</td><td><span class="gcat"><i class="dot" style="background:' + colorOf(cat) + '"></i>' + esc(cat.name) + "</span></td><td>" + esc(cardLabel(t)) + "</td>" + (dos() ? "<td>" + esc(ownerLabel(t)) + "</td>" : "") + '<td class="num r">' + fmt(c.amt) + '</td><td class="ac"><button class="iconbtn x" type="button" data-edit="' + t.id + '" aria-label="Editar ' + esc(t.desc) + '">' + IEDIT + '</button><button class="iconbtn x" type="button" data-del="' + t.id + '" aria-label="Eliminar ' + esc(t.desc) + '">' + IX + "</button></td></tr>";
+      }).join("") : '<tr><td colspan="8" class="empty">No hay movimientos para mostrar.</td></tr>';
+      body = '<div class="gtwrap"><table class="gtbl"><thead><tr><th class="ck"><input type="checkbox" data-gall="1" aria-label="Marcar todos"' + (allOn ? " checked" : "") + '></th>' + th("date", "Fecha") + th("desc", "Descripción") + th("cat", "Tipo de gasto") + th("card", "Tarjeta") + (dos() ? "<th>De quién</th>" : "") + th("amt", "Monto", "r") + '<th></th></tr></thead><tbody>' + trs + '</tbody><tfoot><tr><td></td><td colspan="' + (dos() ? 5 : 4) + '">' + (nsel ? nsel + " marcado" + (nsel === 1 ? "" : "s") + ": " : "Total: " + list.length + " movimientos") + '</td><td class="num r">' + fmt(nsel ? selSum : sum) + "</td><td></td></tr></tfoot></table></div>";
+    } else {
+      var rows = list.length ? list.map(function (c) {
+        var t = c.t, cat = catOf(t.cat), nextPay = t.pm > CUR_KEY;
+        return '<li class="row"' + (ui.selMode && ui.sel[t.id] ? ' style="box-shadow:inset 3px 0 0 var(--primary)"' : "") + '>' + (ui.selMode ? '<input type="checkbox" data-sel="' + t.id + '" aria-label="Marcar ' + esc(t.desc) + '"' + (ui.sel[t.id] ? " checked" : "") + ' style="width:20px;height:20px;margin:0">' : "") + '<span class="d num">' + ddmm(c.date) + '</span><span class="info"><b><span class="ce" style="background:color-mix(in srgb,' + colorOf(cat) + ' 20%, var(--surface))">' + catEmoji(cat) + '</span>' + esc(t.desc) + '</b><small><i class="dot" style="background:' + colorOf(cat) + '"></i>' + esc(cat.name) + " · " + esc(cardLabel(t)) + (dos() ? " · de " + esc(ownerLabel(t)) : "") + (c.label ? ' <span class="badge">cuota ' + c.label + (t.inst.free ? " sin interés" : " con interés") + "</span>" : "") + (nextPay ? ' <span class="badge next">Próximo a pagar</span>' : "") + (t.usd != null ? ' <span class="badge">USD ' + t.usd + "</span>" : "") + '</small></span><span class="amt num">' + fmt(c.amt) + usdLine(c.amt) + '</span><span class="actions" style="gap:0;flex-wrap:nowrap"><button class="iconbtn x" type="button" data-edit="' + t.id + '" aria-label="Editar ' + esc(t.desc) + '">' + IEDIT + '</button><button class="iconbtn x" type="button" data-del="' + t.id + '" aria-label="Eliminar ' + esc(t.desc) + '">' + IX + "</button></span></li>";
+      }).join("") : '<li class="empty">No hay movimientos para mostrar.</li>';
+      body = '<ul class="list' + (ui.selMode ? " selmode" : "") + '">' + rows + "</ul>";
+    }
+    var ctl = '<div class="gctl"><div class="segs" role="group" aria-label="Vista"><button type="button" class="chip" data-gview="tabla" aria-pressed="' + tbl + '">Tabla</button><button type="button" class="chip" data-gview="lista" aria-pressed="' + !tbl + '">Lista</button></div><label class="gsl">Ordenar por <select data-gsortsel="1">' + GSORTS.map(function (s) { return '<option value="' + s[0] + '"' + (GV.key === s[0] ? " selected" : "") + ">" + s[1] + "</option>"; }).join("") + '</select></label><button type="button" class="btn small" data-gdir="1" aria-label="Invertir orden">' + (GV.dir === "asc" ? "Menor a mayor ▲" : "Mayor a menor ▼") + "</button></div>";
+    return '<section class="card"><div class="sec-head"><div><h2>Gastos de ' + esc(monthName(k)) + '</h2><p class="sec-sub">' + list.length + " movimientos a pagar este mes, total " + fmt(sum) + (conv() ? " (≈ " + usd(sum) + ")" : "") + '.</p></div><div class="actions"><button class="btn primary" type="button" data-act="add-gasto">' + IPLUS + "Agregar gasto</button>" + '<button class="btn" type="button" data-vc="open">🎤 Dictar</button>' + (tbl ? "" : '<button class="btn" type="button" data-act="sel:toggle">' + (ui.selMode ? "Salir de seleccionar" : "Seleccionar") + "</button>") + xlsxBtn() + "</div></div>" +
+      '<div style="margin-top:14px">' + monthbar("") + "</div></section>" + formCard() + '<section class="card"><div class="chips" style="margin-top:0">' + chips + "</div>" + ctl + statusP() + (showBar ? selBar(list) : "") + body + "</section>";
   }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-gsort],[data-gview],[data-gdir],[data-gall]"); if (!b) return;
+    if (b.hasAttribute("data-gsort")) { var key = b.getAttribute("data-gsort"); if (GV.key === key) GV.dir = GV.dir === "asc" ? "desc" : "asc"; else { GV.key = key; GV.dir = (key === "date" || key === "amt") ? "desc" : "asc"; } gvSave(); render(); return; }
+    if (b.hasAttribute("data-gview")) { GV.view = b.getAttribute("data-gview"); gvSave(); render(); return; }
+    if (b.hasAttribute("data-gdir")) { GV.dir = GV.dir === "asc" ? "desc" : "asc"; gvSave(); render(); return; }
+    if (b.hasAttribute("data-gall")) {
+      var T = totals(ui.monthKey), lst = T.list.filter(function (c) { return !ui.filter || c.t.cat === ui.filter; }), all = lst.length && lst.every(function (c) { return ui.sel[c.t.id]; });
+      if (all) ui.sel = {}; else lst.forEach(function (c) { ui.sel[c.t.id] = 1; });
+      ui.selAsk = false; render();
+    }
+  });
+  document.addEventListener("change", function (e) {
+    var t = e.target; if (t && t.hasAttribute && t.hasAttribute("data-gsortsel")) { GV.key = t.value; GV.dir = (GV.key === "date" || GV.key === "amt" || GV.key === "recent") ? "desc" : "asc"; gvSave(); render(); }
+  });
 
   /* ----- Cuotas ----- */
   function viewCuotas() {
@@ -1200,7 +1303,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var add = '<div class="dpadd"><input id="dp-n" type="text" maxlength="40" placeholder="Pago a mano (ej. Internet)" aria-label="Nombre del pago"><input id="dp-a" type="text" inputmode="decimal" placeholder="Monto" aria-label="Monto"><span>' + sel("dp-who", personOpts(), ppl[0].id) + '</span><button class="btn small" type="button" data-act="dp:add">Agregar</button></div>';
     var res = !L.length ? "Nada que saldar todavía." : mv.length ? mv.map(moveHtml).join("<br>") : "Están a mano: nadie le debe nada a nadie.";
     return '<div class="actions" style="margin:14px 0 6px"><button class="btn primary" type="button" data-act="dp:fetch">Traer lo que hay que pagar</button>' + (L.length ? '<button class="btn" type="button" data-act="dp:clear">Vaciar</button>' : "") + '</div>' +
-      '<div class="tlist">' + (rows || empty) + "</div>" + add + '<div class="result" role="status">' + res + "</div>";
+      '<div class="tlist">' + (rows || empty) + "</div>" + add + '<div class="result" role="status">' + res + "</div>" + (mv.length ? shareBtn("dp") : "");
   }
   function viewDividir() {
     var k = ui.monthKey, C = calc(k), tot = incomeTotal(k), charges = chargesOf(k).sort(function (a, b) { return a.date < b.date ? 1 : -1; }), ppl = state.people;
@@ -1350,6 +1453,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   function viewEventos() {
     var ev = ui.ev ? evOf(ui.ev) : null;
     if (!ev) { ui.ev = null; return evList(); }
+    if (ev.kind === "rest") return rsView(ev);
     return evDetail(ev);
   }
   function evList() {
@@ -1363,10 +1467,11 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (ui.incoming) { var IC = evCalc(ui.incoming); inc = '<section class="card"><h2>Te compartieron un evento</h2><p class="sec-sub"><b>' + esc(ui.incoming.name) + "</b> · " + ui.incoming.members.length + " personas · " + ui.incoming.items.length + " compras · total " + fmt(IC.total) + '. Es una copia: lo que cambies aquí no se sincroniza con quien te la mandó.</p><div class="actions"><button class="btn primary" type="button" data-evimport="1">Agregar a mis eventos</button><button class="btn" type="button" data-evdismiss="1">Descartar</button></div></section>'; }
     var paste = '<section class="card"><h2>¿Te pasaron un link de evento?</h2><p class="sec-sub">Pégalo aquí para revisarlo y agregarlo.</p><form class="form" data-form="evlink" novalidate style="grid-template-columns:1fr auto;align-items:end"><div class="field"><label for="el-link">Link</label><input id="el-link" name="link" autocomplete="off" placeholder="Pega el link completo"></div><button class="btn" type="submit">Revisar</button></form><p class="form-error" id="form-error" role="alert"></p></section>';
     var cards = state.events.length ? state.events.map(function (e) {
+      if (e.kind === "rest") return rsCard(e);
       var C = evCalc(e), top = C.ids.slice().sort(function (a, b) { return C.paid[b] - C.paid[a]; })[0];
       return '<button class="catrow" type="button" data-ev="' + e.id + '" style="grid-template-columns:1fr auto"><span class="cr-name"><b>' + esc(e.name) + '</b></span><span class="cr-amt num">' + fmt(C.total) + '</span><span class="note" style="grid-column:1/-1;text-align:left">' + (e.date ? ddmm(e.date) + "/" + e.date.slice(0, 4) + " · " : "") + e.members.length + " personas · " + e.items.length + " compras" + (C.total > 0 && top ? " · puso más " + esc(evName(e, top)) : "") + "</span></button>";
     }).join("") : '<p class="empty">Aún no hay eventos. Crea uno para empezar.</p>';
-    return '<section class="card"><div class="sec-head"><div><h2>Eventos y grupos temporales</h2><p class="sec-sub">Para una fiesta, un asado o un viaje: sumas lo que compras, los demás suman lo suyo, y se calcula cuánto le toca a cada quien. No afecta tu presupuesto mensual.</p></div><div class="actions"><button class="btn primary" type="button" data-act="ev-new">' + IPLUS + "Nuevo evento</button>" + xlsxBtn() + "</div></div></section>" + form + statusP() + inc + '<section class="card"><div class="catlist">' + cards + "</div></section>" + paste;
+    return '<section class="card"><div class="sec-head"><div><h2>Eventos y grupos temporales</h2><p class="sec-sub">Para una fiesta, un asado o un viaje: sumas lo que compras, los demás suman lo suyo, y se calcula cuánto le toca a cada quien. No afecta tu presupuesto mensual.</p></div><div class="actions"><button class="btn primary" type="button" data-act="ev-new">' + IPLUS + "Nuevo evento</button><button class=\"btn\" type=\"button\" data-rs=\"new\">🍽 Cuenta de restaurante</button>" + xlsxBtn() + "</div></div></section>" + form + rsNew() + statusP() + inc + '<section class="card"><div class="catlist">' + cards + "</div></section>" + paste;
   }
   function evDetail(ev) {
     var C = evCalc(ev), n = ev.members.length, ed = ui.evedit ? ev.items.filter(function (x) { return x.id === ui.evedit; })[0] : null;
@@ -1397,10 +1502,347 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     if (ui.evShare === ev.id) { var lk = evLink(ev); shareBox = '<div class="bbox" style="display:block"><b>Link para compartir</b><p class="note" style="margin:6px 0 10px">Quien lo abra podrá ver una copia del evento y agregarla a sus eventos. Incluye nombres, alias y montos, así que compártelo solo con quienes participan. No se sincroniza: si cambias algo después, genera un link nuevo. Para abrirlo necesita tener acceso a la app.</p><input id="ev-link" readonly value="' + esc(lk) + '" aria-label="Link del evento" style="width:100%;font:inherit;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink)"><div class="actions" style="margin-top:10px"><button class="btn primary" type="button" data-evcopy="1">Copiar link</button></div></div>'; }
     var del = ui.evConfirm ? '<div class="result" role="alert">¿Eliminar este evento y todas sus compras?</div><div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-act="ev-delyes">Sí, eliminar</button><button class="btn" type="button" data-act="ev-delno">Cancelar</button></div>' : "";
     return '<section class="card"><button class="linkbtn" type="button" data-evback="1">← Todos los eventos</button><div class="sec-head" style="margin-top:8px"><div><h2>' + esc(ev.name) + '</h2><p class="sec-sub">' + (ev.date ? ddmm(ev.date) + "/" + ev.date.slice(0, 4) + " · " : "") + n + " personas · total " + fmt(C.total) + (n && C.total ? " · " + fmt(C.total / n) + " por persona si se reparte igual" : "") + '</p></div><div class="actions"><button class="btn primary" type="button" data-act="ev-item">' + IPLUS + "Agregar compra</button>" + xlsxBtn() + '<button class="btn" type="button" data-evshare="1">Compartir con link</button><button class="btn" type="button" data-act="ev-delask">Eliminar evento</button></div></div>' + del + shareBox + "</section>" + form + statusP() +
-      '<section class="card"><h2>Cuentas claras</h2><p class="sec-sub">Quién le paga a quién para quedar a mano.</p><div class="result" role="status">' + result + "</div>" + (C.total > 0 ? '<h3 style="margin-top:18px">Qué le toca a cada persona</h3><ul class="steplist">' + perPerson + "</ul><h3 style=\"margin-top:18px\">Detalle</h3>" + table : "") + "</section>" +
+      '<section class="card"><h2>Cuentas claras</h2><p class="sec-sub">Quién le paga a quién para quedar a mano.</p><div class="result" role="status">' + result + "</div>" + (C.moves.length ? shareBtn("ev") : "") + (C.total > 0 ? '<h3 style="margin-top:18px">Qué le toca a cada persona</h3><ul class="steplist">' + perPerson + "</ul><h3 style=\"margin-top:18px\">Detalle</h3>" + table : "") + "</section>" +
       '<div class="grid2"><section class="card"><h2>Compras</h2><p class="sec-sub">Lo que cada persona fue pagando.</p>' + items + '</section><section class="card"><h2>Personas</h2><p class="sec-sub">Quienes entran en este evento. Agrega a quien se sume después.</p><div>' + chips + '</div><form class="form" data-form="evmember" novalidate style="margin-top:12px"><div class="field"><label for="em-name">Agregar persona</label><input id="em-name" name="name" autocomplete="off" maxlength="30" placeholder="Nombre"></div><div class="field"><label for="em-alias">Alias (opcional)</label><input id="em-alias" name="alias" autocomplete="off" maxlength="40" placeholder="Para que le transfieran"></div><div class="full"><button class="btn primary" type="submit">Agregar</button><span class="form-error" id="form-error" role="alert"></span></div></form></section></div>';
   }
   function evUsedOk(ev, id) { return ev.members.some(function (m) { return m.id === id; }); }
+
+  /* ----- Restaurante: cuenta dividida por núcleos ----- */
+  function shareText(text) {
+    if (navigator.share) { navigator.share({ text: text }).catch(function () {}); return; }
+    try { navigator.clipboard.writeText(text); } catch (e) {}
+    window.open("https://wa.me/?text=" + encodeURIComponent(text), "_blank", "noopener");
+  }
+  var RS = { newOpen: false, edit: null, msg: "", copied: "" };
+  function rsTip() { try { var v = parseFloat(window.localStorage.getItem("pw_tip_v1")); if (v >= 0 && v <= 100) return v; } catch (e) {} return 10; }
+  function rsMoney(n) { return fmt(Math.round(n * 100) / 100); }
+  function rsGroups(r) {
+    var seen = {}, out = [];
+    r.people.forEach(function (p) { if (!seen[p.g]) { seen[p.g] = { g: p.g, people: [] }; out.push(seen[p.g]); } seen[p.g].people.push(p); });
+    out.forEach(function (G) { G.name = G.people.map(function (p) { return p.name; }).join(" y "); var al = G.people.filter(function (p) { return p.alias; })[0]; G.alias = al ? al.alias : ""; });
+    return out;
+  }
+  function rsCalc(r) {
+    var G = rsGroups(r), sub = {}, un = [], total = 0;
+    G.forEach(function (x) { sub[x.g] = 0; });
+    r.lines.forEach(function (l) {
+      var qty = +l.qty || 0, unit = +l.unit || 0, ids = G.map(function (x) { return x.g; });
+      if (l.mode === "eq") { var set = (l.eq && l.eq.length ? l.eq : ids).filter(function (g) { return sub[g] !== undefined; }); if (!set.length) set = ids; set.forEach(function (g) { sub[g] += qty * unit / set.length; }); }
+      else { var a = 0; ids.forEach(function (g) { var u = +((l.q || {})[g]) || 0; a += u; sub[g] += u * unit; }); if (Math.abs(a - qty) > 0.001) un.push({ l: l, diff: qty - a }); }
+    });
+    var tip = +r.tip || 0, bill = r.lines.reduce(function (s2, l) { return s2 + (+l.qty || 0) * (+l.unit || 0); }, 0);
+    var billC = Math.round(bill * 100), tipC = Math.round(billC * tip / 100);
+    function alloc(totalC, weights) {
+      var sw = weights.reduce(function (x, y) { return x + y; }, 0), out = weights.map(function (w) { return sw > 0 ? Math.floor(totalC * w / sw) : 0; }), rest = totalC - out.reduce(function (x, y) { return x + y; }, 0);
+      var ord = weights.map(function (w, i) { return { i: i, f: sw > 0 ? (totalC * w / sw) - Math.floor(totalC * w / sw) : 0 }; }).sort(function (x, y) { return y.f - x.f; });
+      for (var k = 0; rest > 0 && ord.length; k++, rest--) out[ord[k % ord.length].i]++;
+      return out;
+    }
+    var subW = G.map(function (x) { return Math.round(sub[x.g] * 100); }), consumed = subW.reduce(function (x, y) { return x + y; }, 0);
+    var subC = consumed > 0 ? alloc(consumed, subW) : subW, tipA = alloc(tipC, subC.length && consumed > 0 ? subC : subW);
+    var rows = G.map(function (x, i) { return { g: x.g, name: x.name, alias: x.alias, sub: subC[i] / 100, tip: tipA[i] / 100, total: (subC[i] + tipA[i]) / 100 }; });
+    total = (consumed + tipC) / 100; bill = consumed / 100;
+    return { rows: rows, un: un, total: Math.round(total * 100) / 100, bill: Math.round(bill * 100) / 100, tipTotal: tipC / 100 };
+  }
+  function rsOf() { var e = ui.ev ? evOf(ui.ev) : null; return e && e.kind === "rest" ? e : null; }
+  function rsCard(e) {
+    var r = e.rest, C = rsCalc(r);
+    return '<button class="catrow" type="button" data-ev="' + e.id + '" style="grid-template-columns:1fr auto"><span class="cr-name"><b>🍽 ' + esc(e.name) + '</b></span><span class="cr-amt num">' + fmt(C.total) + '</span><span class="note" style="grid-column:1/-1;text-align:left">' + (e.date ? ddmm(e.date) + "/" + e.date.slice(0, 4) + " · " : "") + "Restaurante · " + r.people.length + " personas · " + rsGroups(r).length + " núcleos · " + (r.stage === "closed" ? "cerrada" : r.stage === "order" ? "pidiendo" : "armando") + "</span></button>";
+  }
+  function rsNew() {
+    if (!RS.newOpen) return "";
+    return '<section class="card" id="form-card"><h2>Cuenta de restaurante</h2><p class="muted">Dividen una cuenta entre varias familias o parejas: cada núcleo paga lo que consumió, más la propina.</p>' +
+      '<div class="field"><label for="rs-name">Nombre del restaurante</label><input id="rs-name" autocomplete="off" maxlength="40" placeholder="Ej: La Parrilla de Palermo"></div>' +
+      '<div class="two"><div class="field"><label for="rs-date">Fecha</label><input id="rs-date" type="date" value="' + TODAY + '"></div><div class="field"><label for="rs-n">¿Cuántas personas son?</label><input id="rs-n" type="number" min="2" max="40" inputmode="numeric" placeholder="Ej: 12"></div></div>' +
+      '<div class="field" style="max-width:220px"><label for="rs-tip">Propina %</label><input id="rs-tip" type="number" min="0" max="100" step="0.5" inputmode="decimal" value="' + rsTip() + '"></div>' +
+      '<div class="full"><button class="btn primary" type="button" data-rs="create">Continuar</button><button class="btn" type="button" data-rs="cancel">Cancelar</button><span class="form-error" id="rs-err" role="alert"></span></div></section>';
+  }
+  function rsView(ev) {
+    var r = ev.rest, C = rsCalc(r), G = rsGroups(r), head = '<section class="card"><button class="linkbtn" type="button" data-evback="1">← Todos los eventos</button><div class="sec-head" style="margin-top:8px"><div><h2>🍽 ' + esc(ev.name) + '</h2><p class="sec-sub">' + (ev.date ? ddmm(ev.date) + "/" + ev.date.slice(0, 4) + " · " : "") + r.people.length + " personas en " + G.length + " núcleos · cuenta " + fmt(C.total) + " con propina " + numFmt(r.tip) + "%</p></div><div class=\"actions\"><button class=\"btn\" type=\"button\" data-rs=\"del\">Eliminar</button></div></div>" +
+      (RS.del ? '<div class="result" role="alert">¿Eliminar esta cuenta?</div><div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-rs="delyes">Sí, eliminar</button><button class="btn" type="button" data-rs="delno">Cancelar</button></div>' : "") +
+      '<div class="actions" style="margin-top:12px"><button class="chip" type="button" data-rs="stage:setup" aria-pressed="' + (r.stage === "setup") + '">1 · Personas y núcleos</button><button class="chip" type="button" data-rs="stage:order" aria-pressed="' + (r.stage === "order") + '">2 · Pedido</button><button class="chip" type="button" data-rs="stage:closed" aria-pressed="' + (r.stage === "closed") + '">3 · Cuenta y pagos</button></div></section>';
+    if (r.stage === "setup") return head + rsSetup(ev);
+    if (r.stage === "order") return head + rsOrder(ev, C) + rsSummary(r, C, false);
+    return head + rsSummary(r, C, true) + rsClosed(ev, C);
+  }
+  function rsSetup(ev) {
+    var r = ev.rest, n = r.people.length;
+    var rows = r.people.map(function (p, i) {
+      return '<div class="rsrow"><span class="num rsn">' + (i + 1) + '</span><input type="text" value="' + esc(p.name) + '" data-rsf="name:' + p.id + '" aria-label="Nombre de la persona ' + (i + 1) + '" maxlength="30"><select data-rsf="g:' + p.id + '" aria-label="Núcleo de ' + esc(p.name) + '">' + Array.apply(null, Array(Math.max(n, 1))).map(function (_, k) { return '<option value="' + (k + 1) + '"' + (p.g === k + 1 ? " selected" : "") + ">Núcleo " + (k + 1) + "</option>"; }).join("") + '</select><input type="text" value="' + esc(p.alias || "") + '" data-rsf="alias:' + p.id + '" aria-label="Alias de ' + esc(p.name) + '" maxlength="40" placeholder="Alias (opcional)"></div>';
+    }).join("");
+    var gl = rsGroups(r).map(function (G) { return "<li><b>" + esc(G.name) + "</b> · " + G.people.length + " persona" + (G.people.length === 1 ? "" : "s") + "</li>"; }).join("");
+    return '<section class="card"><h2>Personas y núcleos familiares</h2><p class="sec-sub">Escribe el nombre de cada persona y elige a qué núcleo pertenece (por ejemplo, cada pareja es un núcleo). Cada núcleo paga junto.</p>' +
+      '<div class="actions"><button class="btn small" type="button" data-rs="pairs">Agrupar en parejas</button><button class="btn small" type="button" data-rs="solo">Cada uno por separado</button><button class="btn small" type="button" data-rs="padd">+ Agregar persona</button><button class="btn small" type="button" data-rs="pdel"' + (n > 2 ? "" : " disabled") + '>− Quitar la última</button></div>' +
+      '<div class="rslist">' + rows + '</div><h3 style="margin-top:16px">Núcleos (' + rsGroups(r).length + ')</h3><ul class="steplist">' + gl + '</ul>' +
+      '<div class="field" style="max-width:220px;margin-top:12px"><label for="rs-tipf">Propina %</label><input id="rs-tipf" type="number" min="0" max="100" step="0.5" inputmode="decimal" value="' + esc(String(r.tip)) + '" data-rsf="tip"></div><p class="note">La propina se reparte según lo que consumió cada núcleo. Siempre arranca en tu valor habitual y puedes cambiarla.</p>' +
+      '<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-rs="stage:order">Continuar al pedido →</button></div></section>';
+  }
+  function rsOrder(ev, C) {
+    var r = ev.rest, G = rsGroups(r);
+    var add = '<section class="card"><h2>Lo que pidieron</h2><p class="sec-sub">Anota cada plato con la cantidad y el precio por unidad de la factura. Luego asigna a qué núcleo corresponde cada unidad, o divide en partes iguales.</p>' +
+      '<div class="rsadd"><div class="field"><label for="rl-desc">Plato o bebida</label><input id="rl-desc" autocomplete="off" maxlength="40" placeholder="Ej: Carne"></div><div class="field"><label for="rl-qty">Cantidad</label><input id="rl-qty" type="number" min="1" step="1" inputmode="numeric" placeholder="4"></div><div class="field"><label for="rl-unit">Precio por unidad</label><input id="rl-unit" data-money="1" inputmode="decimal" autocomplete="off" placeholder="0"></div><button class="btn primary" type="button" data-rs="ladd">Agregar</button></div><p class="form-error" id="rs-err" role="alert">' + esc(RS.msg) + '</p></section>';
+    var lines = r.lines.map(function (l) {
+      var qty = +l.qty || 0, a = 0, ids = G.map(function (x) { return x.g; });
+      if (l.mode !== "eq") ids.forEach(function (g) { a += +((l.q || {})[g]) || 0; });
+      var ok = l.mode === "eq" || Math.abs(a - qty) < 0.001, set = l.eq && l.eq.length ? l.eq : ids;
+      var asg = l.mode === "eq" ?
+        '<p class="note">Partes iguales entre: ' + G.map(function (x) { return '<label class="rschk"><input type="checkbox" data-rsf="eq:' + l.id + ':' + x.g + '"' + (set.indexOf(x.g) >= 0 ? " checked" : "") + "> " + esc(x.name) + "</label>"; }).join(" ") + "</p>" :
+        '<div class="rsgrid">' + G.map(function (x) { var u = +((l.q || {})[x.g]) || 0; return '<div class="rsg' + (u ? " on" : "") + '"><span class="rsgn">' + esc(x.name) + '</span><span class="rsstep"><button type="button" class="iconbtn x" data-rs="q:' + l.id + ':' + x.g + ':-1" aria-label="Quitar una unidad a ' + esc(x.name) + '">−</button><b class="num">' + u + '</b><button type="button" class="iconbtn x" data-rs="q:' + l.id + ':' + x.g + ':1" aria-label="Sumar una unidad a ' + esc(x.name) + '">+</button></span></div>'; }).join("") + "</div>";
+      return '<section class="card rsline"><div class="sec-head"><div><h3 style="margin:0">' + esc(l.desc) + '</h3><p class="sec-sub">' + qty + " × " + rsMoney(+l.unit || 0) + " = <b>" + rsMoney(qty * (+l.unit || 0)) + "</b></p></div><div class=\"actions\"><button class=\"btn small\" type=\"button\" data-rs=\"mode:" + l.id + "\">" + (l.mode === "eq" ? "Asignar por unidades" : "Partes iguales") + '</button><button class="iconbtn x" type="button" data-rs="ldel:' + l.id + '" aria-label="Quitar ' + esc(l.desc) + '">' + IX + "</button></div></div>" +
+        (l.mode === "eq" ? "" : '<p class="note"' + (ok ? "" : ' style="color:var(--bad)"') + ">Asignadas " + a + " de " + qty + (ok ? " ✓" : " · faltan " + (qty - a)) + "</p>") + asg + "</section>";
+    }).join("");
+    var empty = r.lines.length ? "" : '<section class="card"><p class="empty">Aún no anotaste nada. Agrega el primer plato.</p></section>';
+    return add + lines + empty;
+  }
+  function rsSummary(r, C, closed) {
+    var rows = C.rows.map(function (x) { return '<li class="rsli"><span class="rsname">' + esc(x.name) + '</span><span class="rsnum rs-sin"><small>Sin propina</small>' + rsMoney(x.sub) + '</span><span class="rsnum rs-con"><small>Con propina</small><b>' + rsMoney(x.total) + "</b></span></li>"; }).join("");
+    var warn = C.un.length ? '<p class="note" style="color:var(--bad)">Falta asignar: ' + C.un.map(function (u) { return esc(u.l.desc) + " (" + (u.diff > 0 ? "faltan " : "sobran ") + Math.abs(u.diff) + ")"; }).join(", ") + ".</p>" : "";
+    var tipf = closed ? "" : '<div class="field" style="max-width:200px;margin:10px 0"><label for="rs-tipo">Propina % (sobre el total de la factura)</label><input id="rs-tipo" type="number" min="0" max="100" step="0.5" inputmode="decimal" value="' + esc(String(r.tip)) + '" data-rsf="tip"></div>';
+    var tot = '<div class="rstot"><div class="rstr"><span>Total de la factura</span><b class="num">' + rsMoney(C.bill) + '</b></div><div class="rstr rs-tipr"><span>Propina ' + numFmt(r.tip) + '% del total</span><b class="num">' + rsMoney(C.tipTotal) + '</b></div><div class="rstr rs-grand"><span>Total con propina</span><b class="num">' + rsMoney(C.total) + "</b></div></div>";
+    return '<section class="card"><h2>Cuánto le toca a cada núcleo</h2>' + tipf + '<ul class="rsl">' + (rows || '<li class="empty">Sin núcleos.</li>') + "</ul>" + tot + '<p class="note">La suma de los núcleos coincide exactamente con el total de la factura y con la propina.</p>' + warn +
+      (closed ? "" : '<div class="actions" style="margin-top:12px"><button class="btn primary" type="button" data-rs="close"' + (r.lines.length ? "" : " disabled") + ">Cerrar la cuenta →</button></div>") + "</section>";
+  }
+  function rsMsg(ev, C, only) {
+    var r = ev.rest, pay = r.payer ? C.rows.filter(function (x) { return x.g === r.payer; })[0] : null, d = ev.date ? ddmm(ev.date) + "/" + ev.date.slice(0, 4) : "";
+    if (only) return "Hola " + only.name + ", su parte de " + ev.name + (d ? " (" + d + ")" : "") + " es $ " + rsMoney(only.total) + " con propina (sin propina: $ " + rsMoney(only.sub) + ", propina " + numFmt(r.tip) + "%: $ " + rsMoney(only.tip) + ")." + (pay && pay.g !== only.g ? " Pueden transferir a " + pay.name + (pay.alias ? " · alias " + pay.alias : "") + "." : "");
+    return "🍽 " + ev.name + (d ? " · " + d : "") + "\n\n" + C.rows.map(function (x) { return "• " + x.name + ": $ " + rsMoney(x.sub) + " (con propina $ " + rsMoney(x.total) + ")"; }).join("\n") + "\n\nTotal: $ " + rsMoney(C.bill) + "\nPropina " + numFmt(r.tip) + "%: $ " + rsMoney(C.tipTotal) + "\nTotal con propina: $ " + rsMoney(C.total) + (pay ? "\n\nPagó " + pay.name + (pay.alias ? " · alias " + pay.alias : "") + "." : "");
+  }
+  function rsClosed(ev, C) {
+    var r = ev.rest, G = C.rows;
+    var payer = '<section class="card"><h2>Quién pagó y quién debe</h2><div class="field" style="max-width:340px"><label for="rs-payer">¿Quién pagó la cuenta en el restaurante?</label><select id="rs-payer" data-rsf="payer"><option value="">(nadie en particular)</option>' + G.map(function (x) { return '<option value="' + x.g + '"' + (r.payer === x.g ? " selected" : "") + ">" + esc(x.name) + "</option>"; }).join("") + "</select></div>" +
+      '<ul class="steplist">' + G.map(function (x) {
+        var pay = r.payer && r.payer !== x.g;
+        var py = r.payer ? G.filter(function (y) { return y.g === r.payer; })[0] : null;
+        return "<li><b>" + esc(x.name) + "</b> " + (pay && py ? "debe <b>" + rsMoney(x.total) + "</b> a " + esc(py.name) + aliasHtml(py.alias) : r.payer === x.g ? "pagó la cuenta, le corresponde <b>" + rsMoney(x.total) + "</b>" : "le corresponde <b>" + rsMoney(x.total) + "</b>") + ' <button class="linkbtn" type="button" data-rs="share:' + x.g + '">Compartir</button></li>';
+      }).join("") + "</ul>" +
+      '<div class="actions"><button class="btn primary" type="button" data-rs="shareall">Compartir resumen</button><button class="btn" type="button" data-rs="stage:order">Reabrir pedido</button></div></section>';
+    var mine = r.mine || (function () { var nm = (state.people[0] && state.people[0].name || "").toLowerCase(), p = r.people.filter(function (x) { return x.name.toLowerCase() === nm; })[0]; return p ? p.g : (G[0] && G[0].g); })();
+    var row = G.filter(function (x) { return x.g === mine; })[0] || G[0];
+    var reg;
+    if (r.txId && state.tx.some(function (t) { return t.id === r.txId; })) reg = '<p class="status ok" role="status">Registrado como gasto: ' + esc(ev.name) + " por " + rsMoney(row ? row.total : 0) + '.</p><div class="actions"><button class="btn" type="button" data-rs="unreg">Quitar ese gasto</button><button class="btn" type="button" data-go="gastos">Ir a Gastos</button></div>';
+    else reg = '<div class="two"><div class="field"><label for="rs-card">Medio de pago</label>' + sel("rs-card", state.cards.filter(function (c) { return c.on !== false; }).map(function (c) { return [c.id, c.name]; }), (RS.card || (state.cards[0] && state.cards[0].id))) + '</div><div class="field"><label for="rs-pm">Para pagar en</label>' + sel("rs-pm", monthKeys().map(function (k) { return [k, monthLabel(k)]; }), RS.pm || ui.monthKey) + "</div></div>" + (dos() ? '<div class="field" style="max-width:260px"><label for="rs-who">De quién es el gasto</label>' + sel("rs-who", personOpts(), RS.who || state.people[0].id) + "</div>" : "") + '<div class="actions"><button class="btn primary" type="button" data-rs="reg">Registrar mi parte como gasto (' + rsMoney(row ? row.total : 0) + ")</button></div><p class=\"note\">Se anota con el nombre del restaurante, categoría Restaurante y la propina incluida.</p>";
+    return payer + '<section class="card"><h2>Mi parte</h2><div class="field" style="max-width:340px"><label for="rs-mine">¿Cuál es tu núcleo?</label><select id="rs-mine" data-rsf="mine">' + G.map(function (x) { return '<option value="' + x.g + '"' + (x.g === mine ? " selected" : "") + ">" + esc(x.name) + "</option>"; }).join("") + "</select></div>" + (row ? '<p class="sec-sub">Te corresponde <b>' + rsMoney(row.total) + "</b> (consumo " + rsMoney(row.sub) + " + propina " + rsMoney(row.tip) + ").</p>" : "") + reg + "</section>";
+  }
+  function rsId() { return nid("r"); }
+  function rsGo() { render(); }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-rs]"); if (!b) return;
+    var a = b.getAttribute("data-rs"), ev = rsOf(), r = ev && ev.rest, p = a.split(":");
+    if (a === "new") { RS.newOpen = true; ui.evform = ""; render(); var f = $("rs-name"); if (f) { $("form-card").scrollIntoView({ block: "start" }); f.focus(); } return; }
+    if (a === "cancel") { RS.newOpen = false; render(); return; }
+    if (a === "create") {
+      var nm = ($("rs-name").value || "").trim(), n = Math.round(+$("rs-n").value), tip = parseFloat($("rs-tip").value), er = $("rs-err");
+      if (!nm) { er.textContent = "Escribe el nombre del restaurante."; return; }
+      if (!(n >= 2 && n <= 40)) { er.textContent = "Escribe cuántas personas son (entre 2 y 40)."; return; }
+      if (!(tip >= 0 && tip <= 100)) tip = 10;
+      try { window.localStorage.setItem("pw_tip_v1", String(tip)); } catch (x) {}
+      var d = $("rs-date").value; if (!dateOk(d)) d = TODAY;
+      var people = []; for (var i = 0; i < n; i++) people.push({ id: rsId() + i, name: i === 0 && state.people[0] ? state.people[0].name : "Persona " + (i + 1), alias: "", g: i + 1 });
+      var nev = { id: nid("e"), kind: "rest", name: nm.slice(0, 40), date: d, members: [], items: [], lastBy: "", rest: { people: people, tip: tip, lines: [], stage: "setup", payer: "", mine: 0, txId: "" } };
+      state.events.push(nev); RS.newOpen = false; ui.ev = nev.id; render(); window.scrollTo(0, 0); return;
+    }
+    if (!r) return;
+    if (a === "del") { RS.del = true; render(); return; }
+    if (a === "delno") { RS.del = false; render(); return; }
+    if (a === "delyes") { state.events = state.events.filter(function (x) { return x.id !== ev.id; }); RS.del = false; ui.ev = null; render(); return; }
+    if (p[0] === "stage") { if (p[1] === "closed" && !r.lines.length) { RS.msg = ""; r.stage = "order"; RS.msg = "Anota al menos un plato antes de cerrar."; } else r.stage = p[1]; render(); window.scrollTo(0, 0); return; }
+    if (a === "pairs") { r.people.forEach(function (x, i) { x.g = Math.floor(i / 2) + 1; }); render(); return; }
+    if (a === "solo") { r.people.forEach(function (x, i) { x.g = i + 1; }); render(); return; }
+    if (a === "padd") { if (r.people.length < 40) r.people.push({ id: rsId(), name: "Persona " + (r.people.length + 1), alias: "", g: r.people.length + 1 }); render(); return; }
+    if (a === "pdel") { if (r.people.length > 2) { r.people.pop(); r.people.forEach(function (x) { if (x.g > r.people.length) x.g = r.people.length; }); } render(); return; }
+    if (a === "ladd") {
+      var ds = ($("rl-desc").value || "").trim(), q = Math.round(+$("rl-qty").value), u = parseAmount($("rl-unit").value);
+      if (!ds || !(q >= 1) || !(u > 0)) { RS.msg = "Escribe el plato, la cantidad y el precio por unidad."; render(); return; }
+      RS.msg = ""; r.lines.push({ id: rsId(), desc: ds.slice(0, 40), qty: q, unit: u, mode: "q", q: {}, eq: [] }); render(); var fd = $("rl-desc"); if (fd) fd.focus(); return;
+    }
+    if (p[0] === "ldel") { r.lines = r.lines.filter(function (l) { return l.id !== p[1]; }); render(); return; }
+    if (p[0] === "mode") { var l1 = r.lines.filter(function (l) { return l.id === p[1]; })[0]; if (l1) l1.mode = l1.mode === "eq" ? "q" : "eq"; render(); return; }
+    if (p[0] === "q") { var l2 = r.lines.filter(function (l) { return l.id === p[1]; })[0]; if (l2) { l2.q = l2.q || {}; var g = +p[2], cur = +l2.q[g] || 0, tot = 0; Object.keys(l2.q).forEach(function (k) { tot += +l2.q[k] || 0; }); var nv = cur + (+p[3]); if (nv < 0) nv = 0; if (+p[3] > 0 && tot >= l2.qty) nv = cur; l2.q[g] = nv; } render(); return; }
+    if (a === "close") { var C = rsCalc(r); if (C.un.length) { RS.msg = ""; } r.stage = "closed"; render(); window.scrollTo(0, 0); return; }
+    if (a === "shareall") { shareText(rsMsg(ev, rsCalc(r), null)); return; }
+    if (p[0] === "share") { var C2 = rsCalc(r), row = C2.rows.filter(function (x) { return x.g === +p[1]; })[0]; if (row) shareText(rsMsg(ev, C2, row)); return; }
+    if (a === "reg") {
+      var C3 = rsCalc(r), mineG = r.mine || (function () { var nm0 = (state.people[0] && state.people[0].name || "").toLowerCase(), pp = r.people.filter(function (x) { return x.name.toLowerCase() === nm0; })[0]; return pp ? pp.g : (C3.rows[0] && C3.rows[0].g); })();
+      var mr = C3.rows.filter(function (x) { return x.g === mineG; })[0]; if (!mr || !(mr.total > 0)) return;
+      var card = $("rs-card").value, pm = $("rs-pm").value, who = $("rs-who") ? $("rs-who").value : state.people[0].id; RS.card = card; RS.pm = pm; RS.who = who;
+      var catId = state.cats.some(function (c) { return c.id === "rest"; }) ? "rest" : "varios";
+      var tx = { id: nid("t"), date: ev.date || TODAY, pm: pm, desc: ev.name, cat: catId, card: card, amt: mr.total, usd: null, split: [who], inst: null, note: "Restaurante: " + r.people.length + " personas, propina " + numFmt(r.tip) + "% incluida", card2: "", part2: 0, rec: false, seq: Date.now() };
+      state.tx.push(tx); ensureMonth(pm); r.txId = tx.id; r.mine = mineG; say("Registrado en Gastos: " + ev.name + ", " + rsMoney(mr.total) + ".", "ok"); render(); return;
+    }
+    if (a === "unreg") { state.tx = state.tx.filter(function (t) { return t.id !== r.txId; }); r.txId = ""; render(); return; }
+  });
+  document.addEventListener("change", function (e) {
+    var t = e.target, f = t && t.getAttribute && t.getAttribute("data-rsf"); if (!f) return;
+    var ev = rsOf(), r = ev && ev.rest; if (!r) return; var p = f.split(":");
+    if (p[0] === "name") { var x = r.people.filter(function (y) { return y.id === p[1]; })[0]; if (x) x.name = t.value.trim().slice(0, 30) || x.name; render(); return; }
+    if (p[0] === "alias") { var x2 = r.people.filter(function (y) { return y.id === p[1]; })[0]; if (x2) { var al = t.value.trim().slice(0, 40); x2.alias = (typeof aliasErr === "function" && aliasErr(al)) ? "" : al; } render(); return; }
+    if (p[0] === "g") { var x3 = r.people.filter(function (y) { return y.id === p[1]; })[0]; if (x3) x3.g = +t.value; render(); return; }
+    if (p[0] === "tip") { var v = parseFloat(t.value); if (v >= 0 && v <= 100) { r.tip = v; try { window.localStorage.setItem("pw_tip_v1", String(v)); } catch (x4) {} } render(); return; }
+    if (p[0] === "eq") { var l = r.lines.filter(function (y) { return y.id === p[1]; })[0]; if (l) { l.eq = l.eq && l.eq.length ? l.eq : rsGroups(r).map(function (G) { return G.g; }); var g = +p[2], i = l.eq.indexOf(g); if (t.checked && i < 0) l.eq.push(g); if (!t.checked && i >= 0) l.eq.splice(i, 1); if (!l.eq.length) l.eq = rsGroups(r).map(function (G) { return G.g; }); } render(); return; }
+    if (p[0] === "payer") { r.payer = t.value ? +t.value : ""; render(); return; }
+    if (p[0] === "mine") { r.mine = +t.value; render(); return; }
+  });
+
+  /* ----- Compartir lo que se debe (con alias) ----- */
+  function shareBtn(kind) { return '<div class="actions" style="margin-top:10px"><button class="btn small" type="button" data-sharemv="' + kind + '">Compartir lo que se debe</button></div>'; }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-sharemv]"); if (!b) return;
+    var kind = b.getAttribute("data-sharemv"), lines = [], title = "", nm = personName, al = aliasOf, mv = [];
+    if (kind === "ev") { var ev = evOf(ui.ev); if (!ev) return; mv = evCalc(ev).moves; nm = function (id) { return evName(ev, id); }; al = function (id) { return evAlias(ev, id); }; title = ev.name; }
+    else { var C = calc(ui.monthKey); mv = kind === "dp" ? ledgerMoves(ui.monthKey, C) : C.moves; title = "Cuentas de " + monthName(ui.monthKey); }
+    if (!mv.length) return;
+    lines = mv.map(function (m) { return "• " + nm(m.from) + " le paga a " + nm(m.to) + ": $ " + fmt(m.amt).replace(/^\$\s?/, "") + (al(m.to) ? " (alias " + al(m.to) + ")" : ""); });
+    shareText("💸 " + title + "\n" + lines.join("\n"));
+  });
+
+  /* ----- Dictar un gasto: intérprete de la frase (sin IA, solo reglas) ----- */
+  function vNorm(s) { return String(s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/[$¿?¡!;:()"]/g, " ").replace(/\s+/g, " ").trim(); }
+  var V_UNITS = { cero: 0, un: 1, uno: 1, una: 1, dos: 2, tres: 3, cuatro: 4, cinco: 5, seis: 6, siete: 7, ocho: 8, nueve: 9, diez: 10, once: 11, doce: 12, trece: 13, catorce: 14, quince: 15, dieciseis: 16, diecisiete: 17, dieciocho: 18, diecinueve: 19, veinte: 20, veintiuno: 21, veintiun: 21, veintidos: 22, veintitres: 23, veinticuatro: 24, veinticinco: 25, veintiseis: 26, veintisiete: 27, veintiocho: 28, veintinueve: 29 };
+  var V_TENS = { treinta: 30, cuarenta: 40, cincuenta: 50, sesenta: 60, setenta: 70, ochenta: 80, noventa: 90 };
+  var V_HUND = { cien: 100, ciento: 100, doscientos: 200, trescientos: 300, cuatrocientos: 400, quinientos: 500, seiscientos: 600, setecientos: 700, ochocientos: 800, novecientos: 900 };
+  var V_MULT = { mil: 1000, luca: 1000, lucas: 1000, millon: 1000000, millones: 1000000, palo: 1000000, palos: 1000000 };
+  var V_DAYS = { hoy: 0, ayer: -1, anteayer: -2 };
+  function vDigits(tok) {
+    if (!/^\d[\d.,]*$/.test(tok)) return null;
+    var t = tok.replace(/[.,]+$/, ""), hasD = t.indexOf(".") >= 0, hasC = t.indexOf(",") >= 0;
+    if (hasD && hasC) t = t.replace(/\./g, "").replace(",", ".");
+    else if (hasC) t = t.replace(",", ".");
+    else if (hasD) { var parts = t.split("."); if (parts.length > 2 || parts[parts.length - 1].length === 3) t = t.replace(/\./g, ""); }
+    var v = parseFloat(t); return isNaN(v) ? null : v;
+  }
+  function vIsNum(tok) { return vDigits(tok) !== null || tok in V_UNITS || tok in V_TENS || tok in V_HUND || tok in V_MULT; }
+  function vRuns(nt) {
+    var runs = [], i = 0;
+    while (i < nt.length) {
+      if (!vIsNum(nt[i])) { i++; continue; }
+      var j = i; while (j < nt.length && (vIsNum(nt[j]) || (nt[j] === "y" && j + 1 < nt.length && (nt[j + 1] in V_UNITS) && (nt[j - 1] in V_TENS)))) j++;
+      runs.push([i, j]); i = j;
+    }
+    return runs;
+  }
+  function vRunValue(nt, a, b) {
+    var total = 0, cur = 0;
+    for (var i = a; i < b; i++) {
+      var t = nt[i], d = vDigits(t);
+      if (d !== null) cur += d;
+      else if (t in V_UNITS) cur += V_UNITS[t];
+      else if (t in V_TENS) cur += V_TENS[t];
+      else if (t in V_HUND) cur += V_HUND[t];
+      else if (t in V_MULT) { total += (cur || 1) * V_MULT[t]; cur = 0; }
+    }
+    return total + cur;
+  }
+  var V_EDGE = ["gaste", "gasto", "gastamos", "gastado", "pague", "pagamos", "pago", "compre", "compramos", "compra", "anota", "anotame", "anotar", "registra", "registrame", "agrega", "agregame", "agregar", "puse", "hice", "fue", "fueron", "de", "en", "por", "con", "la", "el", "los", "las", "un", "una", "unos", "unas", "del", "al", "a", "para", "mi", "tarjeta", "credito", "debito", "pesos", "peso", "y", "e", "que", "es", "fue", "ayer", "hoy", "anteayer", "nuevo", "gastos"];
+  function voiceParse(text, ctx) {
+    var raw = String(text || "").replace(/[¿?¡!]/g, " ").trim(), toks = raw.split(/\s+/).filter(Boolean), nt = toks.map(function (t) { return vNorm(t).replace(/[,.]+$/, "") || t; });
+    var used = toks.map(function () { return false; }), out = { text: raw, amt: null, desc: "", card: "", cardAmbig: false, cardName: "", own: "", ownName: "", date: "", cuotas: null };
+    if (!toks.length) return out;
+    function mark(a, b) { for (var i = a; i < b; i++) used[i] = true; }
+    // cuotas
+    for (var i = 0; i < nt.length; i++) {
+      if ((nt[i] === "cuota" || nt[i] === "cuotas") && i > 0) {
+        var k = i - 1; if (vIsNum(nt[k])) { var s = k; while (s - 1 >= 0 && vIsNum(nt[s - 1])) s--; var n = Math.round(vRunValue(nt, s, i)); if (n >= 1 && n <= 36) { out.cuotas = { n: n, free: false }; mark(s, i + 1); if (nt[i - (i - s) - 1] === "en") used[s - 1] = true; } }
+      }
+    }
+    for (var q = 0; q + 1 < nt.length; q++) if (nt[q] === "sin" && /^interes/.test(nt[q + 1])) { if (!out.cuotas) out.cuotas = { n: 0, free: true }; out.cuotas.free = true; mark(q, q + 2); }
+    // monto
+    var runs = vRuns(nt).filter(function (r) { for (var i = r[0]; i < r[1]; i++) if (used[i]) return false; return true; }), best = null;
+    runs.forEach(function (r) { var v = vRunValue(nt, r[0], r[1]); if (v > 0 && (!best || v > best.v)) best = { v: v, a: r[0], b: r[1] }; });
+    if (best) { out.amt = Math.round(best.v * 100) / 100; mark(best.a, best.b); }
+    // fecha
+    for (var d = 0; d < nt.length; d++) {
+      if (nt[d] in V_DAYS) { var dt = new Date(ctx.today + "T12:00:00"); dt.setDate(dt.getDate() + V_DAYS[nt[d]]); out.date = dt.toISOString().slice(0, 10); used[d] = true; }
+      if (nt[d] === "antes" && nt[d + 1] === "de" && nt[d + 2] === "ayer") { var d2 = new Date(ctx.today + "T12:00:00"); d2.setDate(d2.getDate() - 2); out.date = d2.toISOString().slice(0, 10); mark(d, d + 3); }
+    }
+    // de quién
+    var joined = " " + nt.join(" ") + " ";
+    if (ctx.dos) {
+      var mAll = /\b(los dos|ambos|nosotros|compartido|de a dos)\b/.exec(joined);
+      if (mAll) { out.own = "ambos"; var parts = mAll[1].split(" "); for (var x = 0; x < nt.length; x++) if (nt[x] === parts[0] && (parts.length === 1 || nt[x + 1] === parts[1])) { mark(x, x + parts.length); break; } }
+      else {
+        for (var p = 0; p < (ctx.people || []).length; p++) { var pn = vNorm(ctx.people[p].name); for (var y = 0; y < nt.length; y++) if (!used[y] && nt[y] === pn) { out.own = ctx.people[p].id; out.ownName = ctx.people[p].name; used[y] = true; } if (out.own) break; }
+        if (!out.own) for (var z = 0; z < nt.length; z++) if (!used[z] && (nt[z] === "mio" || nt[z] === "mia" || nt[z] === "mi") && nt[z + 1] !== "tarjeta") { out.own = ctx.people[0].id; out.ownName = ctx.people[0].name; used[z] = true; break; }
+      }
+    }
+    // tarjeta
+    var STOP = { ed: 1, zay: 1, de: 1, la: 1, el: 1, y: 1, del: 1 }, scores = [];
+    (ctx.cards || []).forEach(function (c) {
+      var ct = vNorm(c.name).split(/[^a-z0-9]+/).filter(function (t) { return t && !STOP[t]; }), hit = [];
+      ct.forEach(function (t) { for (var i = 0; i < nt.length; i++) if (!used[i] && nt[i] === t) { hit.push(i); return; } });
+      if (hit.length) scores.push({ c: c, n: hit.length, of: ct.length, hit: hit });
+    });
+    scores.sort(function (a, b) { return b.n - a.n || (b.n / b.of) - (a.n / a.of); });
+    if (scores.length) {
+      var top = scores[0], tie = scores.filter(function (s) { return s.n === top.n && (s.n / s.of) === (top.n / top.of); });
+      if (tie.length === 1) { out.card = top.c.id; out.cardName = top.c.name; top.hit.forEach(function (i) { used[i] = true; }); }
+      else { out.cardAmbig = true; scores.filter(function (s) { return s.n === top.n; }).forEach(function (s) { s.hit.forEach(function (i) { used[i] = true; }); }); }
+    } else {
+      var kinds = { efectivo: "Efectivo", debito: "Débito", billetera: "Billetera" };
+      for (var kk = 0; kk < nt.length; kk++) if (kinds[nt[kk]]) { var m = (ctx.cards || []).filter(function (c) { return c.kind === kinds[nt[kk]]; }); if (m.length === 1) { out.card = m[0].id; out.cardName = m[0].name; used[kk] = true; } else if (m.length > 1) { out.cardAmbig = true; used[kk] = true; } break; }
+    }
+    // descripción: lo que sobra, sin conectores en los bordes
+    var rest = []; for (var r = 0; r < toks.length; r++) if (!used[r]) rest.push({ t: toks[r], n: nt[r] });
+    while (rest.length && V_EDGE.indexOf(rest[0].n) >= 0) rest.shift();
+    while (rest.length && V_EDGE.indexOf(rest[rest.length - 1].n) >= 0) rest.pop();
+    out.desc = rest.map(function (x) { return x.t.replace(/[,.]+$/, ""); }).join(" ").replace(/\s+/g, " ").trim().replace(/(^|\s)(\S)/g, function (_, a, b) { return a + b.toUpperCase(); });
+    return out;
+  }
+
+  /* ----- Dictar un gasto (voz o texto) ----- */
+  var VC = { rec: null, on: false, msg: "" };
+  function vcCtx() {
+    return { today: TODAY, dos: dos(), people: state.people.map(function (p) { return { id: p.id, name: p.name }; }),
+      cards: enabledCards().map(function (c) { return { id: c.id, name: c.name, kind: c.kind }; }) };
+  }
+  function vcSupport() { return window.SpeechRecognition || window.webkitSpeechRecognition || null; }
+  function vcPanel() {
+    return '<div class="vcbox" id="vc-box"><div class="vcrow"><button class="btn vcmic" type="button" data-vc="mic" id="vc-mic">' + (VC.on ? "⏹ Escuchando… (toca para parar)" : "🎤 Hablar") + '</button>' +
+      '<input id="vc-txt" class="vcin" autocomplete="off" placeholder="o escribe: gasté 15 mil en Coto con la Visa Galicia"><button class="btn" type="button" data-vc="apply">Aplicar</button></div>' +
+      '<p class="note" id="vc-say" aria-live="polite">' + esc(VC.msg || (vcSupport() ? "Di, por ejemplo: «gasté quince mil en McDonald\'s con la Visa Galicia»." : "Tu navegador no tiene dictado integrado: escribe la frase (o usa el micrófono de tu teclado) y toca Aplicar.")) + "</p></div>";
+  }
+  function vcSet(id, v, ev) { var el = $(id); if (!el) return false; el.value = v; el.dispatchEvent(new Event(ev || "input", { bubbles: true })); return true; }
+  function vcSay(t) { VC.msg = t; var s = $("vc-say"); if (s) s.textContent = t; }
+  function vcApply(text) {
+    if (ui.form !== "gasto" || !$("f-monto")) { openGasto(); }
+    if (!ui.edit) {
+      var r = voiceParse(text, vcCtx()), done = [], miss = [];
+      if (r.amt) { vcSet("f-monto", numFmt(r.amt)); done.push("monto " + fmt(r.amt)); } else miss.push("el monto");
+      if (r.desc) { ui.catTouched = false; vcSet("f-desc", r.desc); done.push("«" + r.desc + "»"); } else miss.push("la descripción");
+      if (r.card) { vcSet("f-medio", r.card, "change"); done.push(r.cardName); }
+      else miss.push(r.cardAmbig ? "la tarjeta (hay varias parecidas)" : "la tarjeta");
+      if (r.own) {
+        if (state.people.length === 2) { var rd = document.querySelector('input[name="own"][value="' + r.own + '"]'); if (rd) { rd.checked = true; rd.dispatchEvent(new Event("change", { bubbles: true })); done.push(r.own === "ambos" ? "de los dos" : "de " + r.ownName); } }
+        else document.querySelectorAll('input[name="split"]').forEach(function (cb) { cb.checked = r.own === "ambos" || cb.value === r.own; });
+      }
+      if (r.date) { var dt = document.querySelector("details"); if (dt) dt.open = true; vcSet("f-fecha", r.date); done.push("fecha " + ddmm(r.date)); }
+      if (r.cuotas && $("f-n") && !$("inst-wrap").hidden) {
+        var fn = $("f-n"), want = String(r.cuotas.n); if (r.cuotas.n && Array.prototype.some.call(fn.options, function (o) { return o.value === want; })) { var dt2 = document.querySelector("details"); if (dt2) dt2.open = true; vcSet("f-n", want, "change"); done.push(want + " cuotas"); }
+        if (r.cuotas.free && $("f-free")) { $("f-free").checked = true; $("f-free").dispatchEvent(new Event("change", { bubbles: true })); }
+      }
+      try { syncForm(); } catch (e) {}
+      vcSay("Escuché: «" + r.text + "». Puse " + (done.join(", ") || "nada") + (miss.length ? ". Falta revisar: " + miss.join(", ") : "") + ". Revisa y toca Guardar.");
+    }
+  }
+  function vcToggle() {
+    var SR = vcSupport();
+    if (VC.on && VC.rec) { try { VC.rec.stop(); } catch (e) {} return; }
+    if (!SR) { vcSay("Este navegador no permite dictar aquí. Escribe la frase en el cuadro y toca Aplicar (en el teclado del celular puedes usar su micrófono)."); var t = $("vc-txt"); if (t) t.focus(); return; }
+    var rec = new SR(); VC.rec = rec; rec.lang = "es-AR"; rec.interimResults = false; rec.maxAlternatives = 1; rec.continuous = false;
+    var got = "";
+    rec.onstart = function () { VC.on = true; var b = $("vc-mic"); if (b) b.textContent = "⏹ Escuchando… (toca para parar)"; vcSay("Escuchando…"); };
+    rec.onresult = function (ev) { for (var i = ev.resultIndex; i < ev.results.length; i++) if (ev.results[i].isFinal) got += ev.results[i][0].transcript + " "; };
+    rec.onerror = function (ev) { var m = { "not-allowed": "No hay permiso para el micrófono: permítelo en el candado de la barra de direcciones.", "service-not-allowed": "El navegador bloqueó el dictado.", "no-speech": "No escuché nada, prueba de nuevo.", "audio-capture": "No encuentro un micrófono.", "network": "El dictado necesita internet." }; vcSay(m[ev.error] || "No pude dictar (" + ev.error + "). Puedes escribir la frase."); };
+    rec.onend = function () { VC.on = false; var b = $("vc-mic"); if (b) b.textContent = "🎤 Hablar"; if (got.trim()) { var t = $("vc-txt"); if (t) t.value = got.trim(); vcApply(got.trim()); } };
+    try { rec.start(); } catch (e) { vcSay("No pude iniciar el micrófono."); }
+  }
+  document.addEventListener("click", function (e) {
+    var b = e.target.closest && e.target.closest("[data-vc]"); if (!b) return;
+    var a = b.getAttribute("data-vc");
+    if (a === "open") { openGasto(); setTimeout(vcToggle, 60); return; }
+    if (a === "mic") { vcToggle(); return; }
+    if (a === "apply") { var t = $("vc-txt"); if (t && t.value.trim()) vcApply(t.value.trim()); else vcSay("Escribe o dicta una frase primero."); }
+  });
+  document.addEventListener("keydown", function (e) { if (e.key === "Enter" && e.target && e.target.id === "vc-txt") { e.preventDefault(); var v = e.target.value.trim(); if (v) vcApply(v); } });
 
   /* ----- Tutorial ----- */
   var STEPS = [
@@ -1413,6 +1855,8 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     { t: "Quién le debe a quién", go: ["dividir", "Ir a Dividir"], b: ["Solo aparece si elegiste dos personas o más.", "Para cada tarjeta eliges quién la pagó este mes, y la app calcula lo que le corresponde al otro.", "Al final de Inicio ves cuánto le toca pagar a cada uno, el resumen por tarjeta y la transferencia que deben hacerse.", "En \"Gastos del mes\" cambias de quién es cada gasto sin abrirlo. \"Gasto por participante\" muestra lo que le toca a cada quien, con qué tarjetas se pagó y cuánto lleva de su presupuesto."] },
     { t: "Eventos: grupos temporales", go: ["eventos", "Ir a Eventos"], b: ["Para una fiesta, un asado o un viaje: creas un evento y pones los nombres de quienes participan.", "Cada persona suma lo que va comprando y de quién es cada compra (para todos o solo para algunos).", "La app calcula cuánto pagó cada quien, cuánto le corresponde y quién le paga a quién. Si tú compraste todo, cada uno ve cuánto te debe; si dos gastaron lo mismo, quedan a mano.", "Es independiente de tu presupuesto mensual."] },
     { t: "Instala zwallet en tu celular", go: ["ajustes", "Ir a Ajustes"], b: ["Abre la dirección de zwallet en el navegador del celular e inicia sesión con tu correo.", "Android (Chrome): menú de los tres puntos → \"Instalar app\" o \"Agregar a pantalla principal\". iPhone (Safari): botón Compartir → \"Agregar a inicio\".", "En la computadora, Chrome o Edge muestran un icono de instalar en la barra de direcciones. También está el botón \"Instalar app\" en Ajustes.", "Queda con su icono y se abre a pantalla completa, igual que una app. Funciona en el navegador y como app: los datos son los mismos."] },
+    { t: "Cuenta de restaurante", go: ["eventos", "Ir a Eventos"], b: ["En Eventos toca \"Cuenta de restaurante\": pon el nombre, la fecha y cuántas personas son.", "Dices a qué núcleo familiar pertenece cada persona (o usas \"Agrupar en parejas\").", "Anotas cada plato con cantidad y precio por unidad, y asignas cuántas unidades consumió cada núcleo, o divides en partes iguales.", "La propina arranca en tu valor habitual (10%) y se edita; se reparte según lo consumido. Al cerrar ves cuánto paga cada núcleo y quién debe a quién, con alias.", "Con \"Registrar mi parte como gasto\" se anota en Gastos con el nombre del restaurante. Con \"Compartir\" mandas el cobro por WhatsApp u otra app."] },
+    { t: "Dictar un gasto por voz", go: ["inicio:add", "Probar el dictado"], b: ["En Inicio o Gastos toca \"🎤 Dictar\" (se abre el formulario y empieza a escuchar). La primera vez el navegador pide permiso para el micrófono: acepta.", "Di todo en una frase, por ejemplo: \"gasté quince mil en McDonald's con la Visa Galicia\". También entiende \"veinte lucas\", \"45 mil 500\", \"ayer\", \"en 6 cuotas\", \"de los dos\" o el nombre de quien lo gastó.", "La app rellena monto, descripción, categoría, tarjeta, de quién y fecha, y te cuenta qué entendió y qué falta. Nada se guarda solo: revisa y toca Guardar.", "Funciona mejor en Chrome y Android. Si tu navegador no dicta, escribe la frase en el cuadro (o usa el micrófono del teclado) y toca Aplicar. No gasta datos de IA: la frase se interpreta dentro de la app."] },
     { t: "Meses, consejos y Excel", go: ["consejos", "Ver consejos"], b: ["\"Cerrar mes\" abre el siguiente y trae gastos fijos, alquiler, servicios y suscripciones; las cuotas pasan solas. \"Agregar mes\" solo suma un mes vacío; el selector de arriba te deja saltar entre meses.", "Consejos analiza el mes que estés viendo, para una persona o para dos según lo que elegiste.", "\"Descargar Excel\" exporta justo lo que ves en pantalla y siempre te pide confirmación antes de guardar."] }
   ];
   function viewTutorial() {
@@ -1444,9 +1888,11 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v27";
+  var APP_VERSION = "v29";
   var CHANGELOG = [
-    ["v27", "Ahora también como app web instalable (GitHub Pages)."],
+    ["v29", "Dictar gastos por voz o texto."],
+    ["v28", "Cuenta de restaurante por núcleos, Gastos en tabla, compartir con alias."],
+    ["v27", "App web instalable (GitHub Pages)."],
     ["v26", "Elegir el mes al crear el Sheet desde Ajustes."],
     ["v25", "Botón Actualizar desde el Sheet, arriba de Ajustes."],
     ["v24", "En Gastos aparece primero el último gasto cargado, como un resumen de tarjeta."],
@@ -1500,7 +1946,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     var acc = window.ZW && window.ZW.email ? '<p class="note">Sesión iniciada como <b>' + esc(window.ZW.email) + '</b>. Los dos ven los mismos datos al instante.</p><div class="actions"><button class="btn" type="button" data-gh="out">Cerrar sesión</button></div>' : '<p class="note">Modo de prueba: nada se guarda en la nube.</p>';
     return '<section class="card"><h2>Cuenta e instalación</h2>' + acc +
       '<p class="label" style="margin-top:14px">Instalar zwallet como app</p><p class="note" id="ghinst">' + ((window.ZW && window.ZW.installHint) || "") + '</p><div class="actions"><button class="btn primary" type="button" data-gh="install">Instalar app</button></div>' +
-      (window.ZW && window.ZW.email ? '<p class="label" style="margin-top:14px">Importar datos</p><p class="note">Sube el archivo zwallet_datos.json solo una vez, cuando la base esté vacía. Si ya hay datos, se reemplazan los que tengan el mismo identificador.</p><div class="actions"><button class="btn" type="button" data-gh="import">Elegir zwallet_datos.json</button></div><p class="note" id="ghimp"></p>' : "") + '</section>';
+      (window.ZW && window.ZW.email ? '<p class="label" style="margin-top:14px">Importar datos</p><p class="note">Sube el archivo zwallet_datos.json solo una vez, cuando la base esté vacía. Si ya hay datos, se reemplazan los que tengan el mismo identificador.</p><div class="actions"><button class="btn" type="button" data-gh="import">Elegir zwallet_datos.json</button><button class="btn" type="button" data-gh="export">Exportar respaldo JSON</button></div><p class="note" id="ghimp"></p>' : "") + '</section>';
   }
   function permCard_off() {
     return '<section class="card"><h2>Compartir y permisos</h2><p class="sec-sub">Para que Zaydi pueda ver y editar desde su celular o la PC, o para cambiar quién puede qué.</p><div class="actions"><button class="btn" type="button" data-act="perm">Abrir permisos</button></div><p class="note" style="margin-top:8px">También está en los botones de arriba del chat, junto a «Compartir».</p></section>';
