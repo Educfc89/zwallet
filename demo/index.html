@@ -471,7 +471,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v34</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">DEMO · v35</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -1906,6 +1906,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     { id: "anio", n: "Resumen del año", go: "anio", what: "Todo el año en una sola pantalla.", b: ["Ves mes por mes cuánto entró y cuánto salió.", "Ves en qué categorías gastaste más durante el año.", "Sirve para darte cuenta de patrones: qué meses cuestan más y por qué."] },
     { id: "calc", n: "Calculadora", go: "calc", what: "Una calculadora común, a mano dentro de la app.", b: ["Suma, resta, multiplica, divide y calcula porcentajes.", "Útil para repartir una cuenta o calcular una propina sin salir de la app."] },
     { id: "ajustes", n: "Ajustes", go: "ajustes", what: "Aquí cambias cómo funciona la app.", b: ["Eliges si la usas solo, de a dos o en grupo.", "Eliges el país y la moneda.", "Agregas o cambias categorías, tarjetas y nombres de las personas.", "Puedes bajar una copia de tus datos y recuperarla después.", "En \"Hoja de Google\" conectas tu planilla para traer o enviar los datos del mes y la configuración."] },
+    { id: "avisos", n: "Avisos", go: "ajustes", what: "La app te avisa cuando alguien registra un gasto o un evento, para que los dos estén enterados.", b: ["Cuando se anota un gasto, sale un aviso con el monto y el nombre, por ejemplo: \"$ 15.000 – McDonald's\". Si lo anotó la otra persona, también dice quién fue.", "También avisa cuando se crea un evento o una cuenta de restaurante.", "Hay tres tipos de aviso y los activas o desactivas en Ajustes → Avisos: dentro de la app, del navegador o celular (con la app abierta en segundo plano) y por correo a los dos.", "El correo sale desde tu Hoja de Google conectada. Si todavía no la conectaste, los otros avisos funcionan igual.", "Usa \"Enviar aviso de prueba\" para comprobar que llega todo."] },
     { id: "instalar", n: "Instalar en el celular", go: "ajustes", what: "Para abrirla como una app más, con su ícono.", b: ["Android: abre el link en Chrome, toca el menú (tres puntos) y elige \"Instalar app\".", "iPhone: abre el link en Safari, toca Compartir y elige \"Agregar a pantalla de inicio\".", "La primera vez entra con tu correo y contraseña. Después entra sola."] }
   ];
   function tutSecBody(S) {
@@ -1942,8 +1943,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v34";
+  var APP_VERSION = "v35";
   var CHANGELOG = [
+    ["v35", "Avisos de gastos y eventos."],
     ["v34", "Montos con 2 decimales en la tabla."],
     ["v33", "Decimales con punto o coma."],
     ["v32", "Tutorial simple por sección."],
