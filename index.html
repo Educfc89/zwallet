@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0B0F0E"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="zwallet"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0A0A0D"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="zwallet"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.webmanifest"><link rel="icon" type="image/png" href="icons/favicon.png"><link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <style>:root{padding:env(safe-area-inset-top,0px) env(safe-area-inset-right,0px) env(safe-area-inset-bottom,0px) env(safe-area-inset-left,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}@media (min-width:700px){html:not([data-tabs="bottom"]) .tabs{flex-wrap:wrap;overflow-x:visible}}</style>
 <style>.gctl { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 14px 0 4px; }
@@ -62,9 +62,126 @@
 .vcmic { white-space: nowrap; }
 .tutline { display: flex; justify-content: flex-end; margin: 0 0 10px; }
 .tutrow { display: flex; justify-content: flex-end; margin: 0 0 8px; }
+html:root[data-zt="zwallet"]{--bg:#0A0A0D;--surface:#15151B;--ink:#F5F5F7;--ink-2:#ABABBA;--line:#2D2D38;--track:#24242E;--bar:#44444F;--primary:#D7192B;--primary-2:#DC1E2E;--on-primary:#FFFFFF;--good:#3DDC84;--warn:#F5B82E;--bad:#FF7A7A;--info:#7DB0FF;--red:#FF4D58;--glow1:rgba(225,29,42,.30);--glow2:rgba(245,184,46,.16);--grid:rgba(255,255,255,.035);--c1:#FF4B55;--c10:#B6E04A;--c11:#D6A56B;--c12:#FF8E8E;--c2:#F5B82E;--c3:#5AA9FF;--c4:#FF6FB5;--c5:#FF8A3D;--c6:#9DB0C2;--c7:#FF6B6B;--c8:#3DD6E0;--c9:#A98FEA;color-scheme:dark;}
+html:root[data-zt="neon"]{--bg:#050A14;--surface:#0B1426;--ink:#E8F7FF;--ink-2:#9FB8CC;--line:#1D3150;--track:#15233C;--bar:#2C4468;--primary:#00C2E0;--primary-2:#4D8BFF;--on-primary:#02131A;--good:#2BE3A0;--warn:#FFC145;--bad:#FF6B8A;--info:#7DB0FF;--red:#FF4FA3;--glow1:rgba(0,194,224,.26);--glow2:rgba(77,139,255,.20);--grid:rgba(120,200,255,.05);--c1:#22D3EE;--c10:#B6E04A;--c11:#D6A56B;--c12:#FF8E8E;--c2:#F5B82E;--c3:#5AA9FF;--c4:#FF6FB5;--c5:#FF8A3D;--c6:#9DB0C2;--c7:#FF6B6B;--c8:#3DD6E0;--c9:#A98FEA;color-scheme:dark;}
+html:root[data-zt="matrix"]{--bg:#030906;--surface:#09140D;--ink:#DDFBE8;--ink-2:#8FB59D;--line:#153322;--track:#0F2418;--bar:#24503A;--primary:#22E06B;--primary-2:#8BFF5A;--on-primary:#02140A;--good:#3DFF8C;--warn:#E6D84A;--bad:#FF7B6B;--info:#66D9FF;--red:#FF5C6C;--glow1:rgba(34,224,107,.22);--glow2:rgba(139,255,90,.12);--grid:rgba(60,255,130,.05);--c1:#34F07F;--c10:#B6E04A;--c11:#D6A56B;--c12:#FF8E8E;--c2:#F5B82E;--c3:#5AA9FF;--c4:#FF6FB5;--c5:#FF8A3D;--c6:#9DB0C2;--c7:#FF6B6B;--c8:#3DD6E0;--c9:#A98FEA;color-scheme:dark;}
+html:root[data-zt="synth"]{--bg:#0B0716;--surface:#151025;--ink:#F2ECFF;--ink-2:#B3A5D6;--line:#2C2347;--track:#221A3A;--bar:#43366B;--primary:#7C3AED;--primary-2:#C026D3;--on-primary:#FFFFFF;--good:#4DE3A5;--warn:#FFC857;--bad:#FF7DA0;--info:#8FB4FF;--red:#FF5FA2;--glow1:rgba(139,92,246,.30);--glow2:rgba(236,72,153,.16);--grid:rgba(200,160,255,.05);--c1:#A78BFA;--c10:#B6E04A;--c11:#D6A56B;--c12:#FF8E8E;--c2:#F5B82E;--c3:#5AA9FF;--c4:#FF6FB5;--c5:#FF8A3D;--c6:#9DB0C2;--c7:#FF6B6B;--c8:#3DD6E0;--c9:#A98FEA;color-scheme:dark;}
+html:root[data-zt="ambar"]{--bg:#0C0905;--surface:#171208;--ink:#FFF3D6;--ink-2:#C4B08A;--line:#382C14;--track:#2A2110;--bar:#54431F;--primary:#F5B82E;--primary-2:#FF8A3D;--on-primary:#1A1200;--good:#7BE08A;--warn:#FFD166;--bad:#FF7A6B;--info:#8FB4FF;--red:#FF6A3D;--glow1:rgba(245,184,46,.22);--glow2:rgba(255,138,61,.14);--grid:rgba(255,200,100,.045);--c1:#F5B82E;--c10:#B6E04A;--c11:#D6A56B;--c12:#FF8E8E;--c2:#FF6A3D;--c3:#5AA9FF;--c4:#FF6FB5;--c5:#FF8A3D;--c6:#9DB0C2;--c7:#FF6B6B;--c8:#3DD6E0;--c9:#A98FEA;color-scheme:dark;}
+html:root[data-zt="claro"]{--bg:#F1F2F6;--surface:#FFFFFF;--ink:#12121A;--ink-2:#4A4A5C;--line:#D9DBE4;--track:#E3E5EC;--bar:#BFC3D1;--primary:#C4121F;--primary-2:#E11D2A;--on-primary:#FFFFFF;--good:#0F7A45;--warn:#8A5A00;--bad:#B3261E;--info:#2F4FD0;--red:#C4121F;--glow1:rgba(225,29,42,.10);--glow2:rgba(245,184,46,.16);--grid:rgba(0,0,0,.04);--c1:#C4121F;--c10:#5F7F14;--c11:#8C6A4F;--c12:#C2415C;--c2:#A86B00;--c3:#2F6FE0;--c4:#C2307A;--c5:#C2540A;--c6:#5A6B7B;--c7:#B23B3B;--c8:#0E7F90;--c9:#7B5CC4;color-scheme:light;}
+/* ===== zwallet: capa visual tecnológica (usa los temas html[data-zt]) ===== */
+html:root[data-zt] body { background: var(--bg); color: var(--ink); }
+html:root[data-zt] body::before { content: ""; position: fixed; inset: -25%; z-index: -2; pointer-events: none;
+  background: radial-gradient(620px 420px at 18% 12%, var(--glow1), transparent 62%), radial-gradient(560px 380px at 86% 18%, var(--glow2), transparent 62%), radial-gradient(700px 420px at 55% 105%, var(--glow1), transparent 65%);
+  animation: ztDrift 24s ease-in-out infinite alternate; }
+html:root[data-zt] body::after { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 46px 46px;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 78%); mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 0%, transparent 78%);
+  animation: ztGrid 40s linear infinite; }
+html:root[data-zt] h1, html:root[data-zt] h2, html:root[data-zt] h3, html:root[data-zt] .brand { font-family: "Space Grotesk", var(--font-display); letter-spacing: -0.01em; }
+html:root[data-zt] .card { background: color-mix(in srgb, var(--surface) 94%, transparent); border: 1px solid var(--line); transition: border-color .25s, box-shadow .25s, transform .25s; }
+html:root[data-zt] .card:hover { border-color: color-mix(in srgb, var(--primary) 50%, var(--line)); box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 22%, transparent), 0 14px 34px -16px var(--glow1); }
+html:root[data-zt] .tabs { background: color-mix(in srgb, var(--bg) 88%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+html:root[data-zt] .tab { background: color-mix(in srgb, var(--surface) 92%, transparent); border-color: var(--line); color: var(--ink); transition: transform .18s, border-color .2s, box-shadow .2s, background .2s; }
+html:root[data-zt] .tab:hover { transform: translateY(-1px); border-color: var(--primary); }
+html:root[data-zt] .tab[aria-current="page"], html:root[data-zt] .btn.primary, html:root[data-zt] .chip[aria-pressed="true"], html:root[data-zt] .seg input:checked + span {
+  background: linear-gradient(100deg, var(--primary), var(--primary-2), var(--primary)); background-size: 220% 100%; color: var(--on-primary); border-color: var(--primary); animation: ztShift 5s linear infinite; }
+html:root[data-zt] .tab[aria-current="page"] { box-shadow: 0 0 18px -4px var(--glow1), inset 0 -3px 0 var(--accent-line, rgba(255,255,255,.35)); }
+html:root[data-zt] .btn { transition: transform .15s, box-shadow .2s, border-color .2s; }
+html:root[data-zt] .btn:hover { transform: translateY(-1px); box-shadow: 0 8px 20px -10px var(--glow1); }
+html:root[data-zt] .btn:active, html:root[data-zt] .tab:active { transform: scale(.97); }
+html:root[data-zt] .btn.primary { position: relative; overflow: hidden; }
+html:root[data-zt] .btn.primary::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.28) 50%, transparent 70%); transform: translateX(-120%); }
+html:root[data-zt] .btn.primary:hover::after { animation: ztSheen .9s ease; }
+html:root[data-zt] .fab { background: linear-gradient(100deg, var(--primary), var(--primary-2)) !important; color: var(--on-primary) !important; border: 1px solid color-mix(in srgb, var(--primary) 60%, #fff) !important; animation: ztRing 2.8s ease-out infinite; }
+html:root[data-zt] .fab svg { stroke: var(--on-primary); }
+html:root[data-zt] .brand i.logo { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent), 0 0 16px -2px var(--glow1); animation: ztPulse 3.4s ease-in-out infinite; }
+html:root[data-zt] .brand i.logo img, html:root[data-zt] .onb-brand i.logo img { width: 100%; height: 100%; display: block; border-radius: 10px; }
+html:root[data-zt] .wm b { color: var(--red); }
+html:root[data-zt] .tag { border-color: var(--ink-2); color: var(--ink-2); }
+html:root[data-zt] .tag[data-k="ok"] { color: var(--good); border-color: var(--good); }
+html:root[data-zt] .tag[data-k="bad"] { color: var(--bad); border-color: var(--bad); }
+html:root[data-zt] .result { background: linear-gradient(100deg, var(--primary), var(--primary-2)); color: var(--on-primary); }
+html:root[data-zt] input, html:root[data-zt] select, html:root[data-zt] textarea { background: var(--surface); color: var(--ink); border-color: var(--line); transition: border-color .2s, box-shadow .2s; }
+html:root[data-zt] input:focus, html:root[data-zt] select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 28%, transparent); outline: none; }
+html:root[data-zt] ::placeholder { color: var(--ink-2); opacity: .85; }
+html:root[data-zt] :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+html:root[data-zt] body[data-ztpage] #screen > * { animation: ztUp .38s cubic-bezier(.2,.7,.2,1) backwards; }
+html:root[data-zt] body[data-ztpage] #screen > *:nth-child(2) { animation-delay: .04s; }
+html:root[data-zt] body[data-ztpage] #screen > *:nth-child(3) { animation-delay: .08s; }
+html:root[data-zt] body[data-ztpage] #screen > *:nth-child(4) { animation-delay: .12s; }
+html:root[data-zt] body[data-ztpage] #screen > *:nth-child(n+5) { animation-delay: .16s; }
+/* selector de temas */
+#zt-btn { margin-left: auto; font: inherit; font-weight: 600; font-size: .85rem; padding: 7px 12px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; transition: transform .15s, border-color .2s; }
+#zt-btn:hover { border-color: var(--primary); transform: translateY(-1px); }
+#zt-pop { position: fixed; z-index: 9500; top: 64px; right: 14px; width: min(360px, calc(100vw - 28px)); max-height: calc(100vh - 90px); overflow: auto; background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 14px; box-shadow: 0 20px 50px -10px rgba(0,0,0,.6), 0 0 30px -8px var(--glow1); animation: ztUp .25s ease both; }
+#zt-pop[hidden] { display: none; }
+#zt-pop h3 { margin: 0 0 4px; font-size: 1rem; }
+#zt-pop p { margin: 0 0 10px; color: var(--ink-2); font-size: .85rem; }
+.zt-opt { display: grid; grid-template-columns: 54px 1fr; gap: 10px; align-items: center; width: 100%; text-align: left; padding: 8px; margin-bottom: 8px; border-radius: 12px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; transition: border-color .2s, transform .15s; }
+.zt-opt:hover { transform: translateY(-1px); border-color: var(--primary); }
+.zt-opt[aria-pressed="true"] { border-color: var(--primary); box-shadow: 0 0 0 1px var(--primary); }
+.zt-opt b { display: block; font-size: .92rem; }
+.zt-opt small { display: block; color: var(--ink-2); font-size: .78rem; line-height: 1.25; }
+.zt-sw { width: 54px; height: 40px; border-radius: 10px; position: relative; overflow: hidden; border: 1px solid rgba(128,128,128,.35); }
+.zt-sw i { position: absolute; border-radius: 6px; }
+.zt-anim { display: flex; align-items: center; gap: 8px; margin-top: 4px; font-size: .9rem; }
+@keyframes ztDrift { from { transform: translate3d(-3%, -2%, 0) scale(1); } to { transform: translate3d(4%, 3%, 0) scale(1.12); } }
+@keyframes ztGrid { from { background-position: 0 0, 0 0; } to { background-position: 46px 46px, 46px 46px; } }
+@keyframes ztShift { from { background-position: 0% 0; } to { background-position: 220% 0; } }
+@keyframes ztSheen { to { transform: translateX(120%); } }
+@keyframes ztPulse { 0%, 100% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 55%, transparent), 0 0 12px -2px var(--glow1); } 50% { box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 80%, transparent), 0 0 24px 0 var(--glow1); } }
+@keyframes ztRing { 0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--primary) 55%, transparent); } 70%, 100% { box-shadow: 0 0 0 16px transparent; } }
+@keyframes ztUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { html:root[data-zt] *, html:root[data-zt] *::before, html:root[data-zt] *::after { animation: none !important; transition: none !important; } }
+html:root[data-zt][data-ztanim="off"] *, html:root[data-zt][data-ztanim="off"] *::before, html:root[data-zt][data-ztanim="off"] *::after { animation: none !important; transition: none !important; }
+html:root[data-zt] .ck.eq { background: linear-gradient(135deg, var(--primary), var(--primary-2)); color: var(--on-primary); border-color: transparent; }
+html:root[data-zt] .ck.eq:hover { filter: brightness(1.12); }
+html:root[data-zt] .ck.op { color: var(--c1); }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script><script src="firebase-config.js"></script>
 <script>
+(function () {
+  var META = {"zwallet": {"name": "zwallet (principal)", "desc": "Rojo y dorado sobre negro, como el logo", "bg": "#0A0A0D", "surface": "#15151B", "primary": "#D7192B", "primary2": "#DC1E2E", "accent": "#FF4B55"}, "neon": {"name": "Neón", "desc": "Cian eléctrico, muy tecnológico", "bg": "#050A14", "surface": "#0B1426", "primary": "#00C2E0", "primary2": "#4D8BFF", "accent": "#22D3EE"}, "matrix": {"name": "Matrix", "desc": "Verde terminal sobre negro", "bg": "#030906", "surface": "#09140D", "primary": "#22E06B", "primary2": "#8BFF5A", "accent": "#34F07F"}, "synth": {"name": "Violeta", "desc": "Violeta y rosa, estilo synthwave", "bg": "#0B0716", "surface": "#151025", "primary": "#7C3AED", "primary2": "#C026D3", "accent": "#A78BFA"}, "ambar": {"name": "Ámbar", "desc": "Dorado cálido, como la moneda del logo", "bg": "#0C0905", "surface": "#171208", "primary": "#F5B82E", "primary2": "#FF8A3D", "accent": "#F5B82E"}, "claro": {"name": "Claro", "desc": "Fondo claro con letras bien marcadas", "bg": "#F1F2F6", "surface": "#FFFFFF", "primary": "#C4121F", "primary2": "#E11D2A", "accent": "#C4121F"}}, ORDER = ["zwallet", "neon", "matrix", "synth", "ambar", "claro"], root = document.documentElement;
+  function get(k, d) { try { return window.localStorage.getItem(k) || d; } catch (e) { return d; } }
+  function put(k, v) { try { window.localStorage.setItem(k, v); } catch (e) {} }
+  function apply(id) {
+    if (!META[id]) id = "zwallet"; root.setAttribute("data-zt", id); put("zw_theme", id);
+    var m = document.querySelector('meta[name="theme-color"]'); if (m) m.setAttribute("content", META[id].bg);
+  }
+  function anim(on) { if (on) root.removeAttribute("data-ztanim"); else root.setAttribute("data-ztanim", "off"); put("zw_anim", on ? "on" : "off"); }
+  apply(get("zw_theme", "zwallet")); anim(get("zw_anim", "on") !== "off");
+  function sw(m) { return '<span class="zt-sw" style="background:' + m.bg + '"><i style="left:6px;top:6px;width:26px;height:10px;background:' + m.primary + '"></i><i style="left:6px;top:20px;width:38px;height:6px;background:' + m.surface + ';border:1px solid ' + m.primary2 + '"></i><i style="right:6px;bottom:5px;width:12px;height:12px;border-radius:50%;background:' + m.accent + '"></i></span>'; }
+  function build() {
+    var top = document.querySelector(".top"); if (!top || document.getElementById("zt-btn")) return;
+    var b = document.createElement("button"); b.id = "zt-btn"; b.type = "button"; b.textContent = "🎨 Tema"; b.setAttribute("aria-haspopup", "dialog"); top.appendChild(b);
+    var pop = document.createElement("div"); pop.id = "zt-pop"; pop.hidden = true; pop.setAttribute("role", "dialog"); pop.setAttribute("aria-label", "Elegir tema"); document.body.appendChild(pop);
+    function paint() {
+      var cur = root.getAttribute("data-zt");
+      pop.innerHTML = "<h3>Elige tu tema</h3><p>Se guarda en este dispositivo. Todos mantienen las letras bien legibles.</p>" + ORDER.map(function (id) { var m = META[id]; return '<button type="button" class="zt-opt" data-zt="' + id + '" aria-pressed="' + (cur === id) + '">' + sw(m) + "<span><b>" + m.name + "</b><small>" + m.desc + "</small></span></button>"; }).join("") +
+        '<label class="zt-anim"><input type="checkbox" id="zt-an"' + (root.getAttribute("data-ztanim") === "off" ? "" : " checked") + "> Animaciones</label>";
+    }
+    b.addEventListener("click", function (e) { e.stopPropagation(); paint(); pop.hidden = !pop.hidden; });
+    pop.addEventListener("click", function (e) { var o = e.target.closest && e.target.closest("[data-zt]"); if (o) { apply(o.getAttribute("data-zt")); paint(); } });
+    pop.addEventListener("change", function (e) { if (e.target.id === "zt-an") anim(e.target.checked); });
+    document.addEventListener("click", function (e) { if (!pop.hidden && !pop.contains(e.target) && e.target !== b) pop.hidden = true; });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") pop.hidden = true; });
+  }
+  /* animación de entrada solo al cambiar de pestaña */
+  var last = null, tmr = null;
+  function watch() {
+    var scr = document.getElementById("screen"); if (!scr) return;
+    new MutationObserver(function () {
+      var t = document.querySelector('.tab[aria-current="page"]'), id = t ? t.getAttribute("data-tab") : "";
+      if (last !== null && id !== last) { document.body.setAttribute("data-ztpage", "1"); clearTimeout(tmr); tmr = setTimeout(function () { document.body.removeAttribute("data-ztpage"); }, 700); }
+      last = id;
+    }).observe(scr, { childList: true });
+    var t0 = document.querySelector('.tab[aria-current="page"]'); last = t0 ? t0.getAttribute("data-tab") : "";
+  }
+  function init() { build(); watch(); }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init); else init();
+})();
+
 (function () {
   var ZW = window.ZW = window.ZW || {};
   var ua = navigator.userAgent || "";
@@ -94,12 +211,12 @@
   var resolveUser, userP = new Promise(function (r) { resolveUser = r; });
   var DB = null, AUTH = null;
   /* ---- pantalla de acceso ---- */
-  var css = '#zwgate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:#0B0F0E;color:#E8EFEC;font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}' +
+  var css = '#zwgate{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;padding:20px;background:#0A0A0D;color:#F5F5F7;font:15px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}' +
     '#zwgate .bx{width:100%;max-width:360px;display:grid;gap:12px}#zwgate img{width:72px;height:72px;border-radius:18px;margin:0 auto}' +
-    '#zwgate h1{margin:0;text-align:center;font-size:1.5rem}#zwgate p{margin:0;text-align:center;color:#9DB0A9;font-size:.9rem}' +
-    '#zwgate input{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid #2A3935;background:#17211E;color:#E8EFEC}' +
-    '#zwgate button{font:inherit;font-weight:600;padding:12px;border-radius:12px;border:1px solid #2A3935;background:#17211E;color:#E8EFEC;cursor:pointer}' +
-    '#zwgate button.p{background:#2BD27F;border-color:#2BD27F;color:#06130C}#zwgate .e{color:#FF8A80;min-height:1.2em}#zwgate .l{background:none;border:0;color:#9DB0A9;font-weight:400;text-decoration:underline;padding:4px}';
+    '#zwgate h1{margin:0;text-align:center;font-size:1.5rem}#zwgate p{margin:0;text-align:center;color:#ABABBA;font-size:.9rem}' +
+    '#zwgate input{font:inherit;padding:12px 14px;border-radius:12px;border:1px solid #2D2D38;background:#15151B;color:#F5F5F7}' +
+    '#zwgate button{font:inherit;font-weight:600;padding:12px;border-radius:12px;border:1px solid #2D2D38;background:#15151B;color:#F5F5F7;cursor:pointer}' +
+    '#zwgate button.p{background:#D7192B;border-color:#D7192B;color:#FFFFFF}#zwgate .e{color:#FF7A7A;min-height:1.2em}#zwgate .l{background:none;border:0;color:#ABABBA;font-weight:400;text-decoration:underline;padding:4px}';
   var gate;
   function showGate(msg, form) {
     if (!gate) { var s = document.createElement("style"); s.textContent = css; document.head.appendChild(s); gate = document.createElement("div"); gate.id = "zwgate"; document.body.appendChild(gate); }
@@ -696,7 +813,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
 
 <main class="wrap">
   <header class="top">
-    <div class="brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v37</span></div>
+    <div class="brand"><i class="logo" aria-hidden="true"><img src="icons/icon-192.png" alt="" width="34" height="34"></i><span class="wm"><b>z</b>wallet</span> <span class="tag" id="sync" role="status" aria-live="polite">Conectando…</span> <span class="tag" id="appver">v38</span></div>
   </header>
   <nav class="tabs" id="tabs" aria-label="Secciones"></nav>
   <div id="screen" class="stack"></div>
@@ -2158,6 +2275,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     { id: "calc", n: "Calculadora", go: "calc", what: "Una calculadora común, a mano dentro de la app.", b: ["Suma, resta, multiplica, divide y calcula porcentajes.", "Útil para repartir una cuenta o calcular una propina sin salir de la app."] },
     { id: "ajustes", n: "Ajustes", go: "ajustes", what: "Aquí cambias cómo funciona la app.", b: ["Eliges si la usas solo, de a dos o en grupo.", "Eliges el país y la moneda.", "Agregas o cambias categorías, tarjetas y nombres de las personas.", "Puedes bajar una copia de tus datos y recuperarla después.", "En \"Hoja de Google\" conectas tu planilla para traer o enviar los datos del mes y la configuración."] },
     { id: "avisos", n: "Avisos", go: "ajustes", what: "La app te avisa cuando alguien registra un gasto o un evento, para que los dos estén enterados.", b: ["Cuando se anota un gasto, sale un aviso con el monto y el nombre, por ejemplo: \"$ 15.000 – McDonald's\". Si lo anotó la otra persona, también dice quién fue.", "También avisa cuando se crea un evento o una cuenta de restaurante.", "Hay tres tipos de aviso y los activas o desactivas en Ajustes → Avisos: dentro de la app, del navegador o celular (con la app abierta en segundo plano) y por correo a los dos.", "El correo sale desde tu Hoja de Google conectada. Si todavía no la conectaste, los otros avisos funcionan igual.", "Usa \"Enviar aviso de prueba\" para comprobar que llega todo."] },
+    { id: "temas", n: "Temas y colores", go: "inicio", what: "Cambias cómo se ve la app: colores y animaciones.", b: ["Toca el botón \"🎨 Tema\" que está arriba a la derecha, junto al nombre de la app.", "Elige entre 6 estilos: zwallet (rojo y dorado, como el logo), Neón, Matrix, Violeta, Ámbar y Claro.", "Todos están revisados para que las letras se lean bien. Si prefieres fondo blanco, elige \"Claro\".", "Puedes apagar las animaciones con la casilla \"Animaciones\" (útil si el celular va lento o si te marean).", "El tema se guarda en cada dispositivo: tú y Zaydi pueden usar temas distintos."] },
     { id: "instalar", n: "Instalar en el celular", go: "ajustes", what: "Para abrirla como una app más, con su ícono.", b: ["Android: abre el link en Chrome, toca el menú (tres puntos) y elige \"Instalar app\".", "iPhone: abre el link en Safari, toca Compartir y elige \"Agregar a pantalla de inicio\".", "La primera vez entra con tu correo y contraseña. Después entra sola."] }
   ];
   function tutSecBody(S) {
@@ -2194,8 +2312,9 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
   }
 
   /* Versión de la app y puntos de restauración */
-  var APP_VERSION = "v37";
+  var APP_VERSION = "v38";
   var CHANGELOG = [
+    ["v38", "Nuevo logo y tema principal rojo y dorado. Selector de 6 temas tecnológicos con animaciones (boton Tema)."],
     ["v37", "Gastos: columna Se paga en, para ver en que mes se paga cada gasto."],
     ["v36", "Gastos: buscador (nombre, tarjeta, tipo, monto, fecha) en este mes o en todos."],
     ["v35", "Avisos: al registrar un gasto o evento, aviso en la app, en el navegador y por correo a los dos."],
@@ -2565,7 +2684,7 @@ html[data-fab="center"] .fab { right: auto; left: 50%; transform: translateX(-50
     el.hidden = false; setInert(true);
     var chk = '<svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 8.5 3.2 3L13 4.5"/></svg>';
     var arrowR = '<svg viewBox="0 0 16 16" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>', arrowL = '<svg viewBox="0 0 16 16" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4"/></svg>';
-    el.innerHTML = '<div class="onb-in"><div class="onb-top"><span class="onb-brand"><i class="logo" aria-hidden="true"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="zwallet"><rect width="64" height="64" rx="16" fill="#0B0F0E"/><rect x="1" y="1" width="62" height="62" rx="15" fill="none" stroke="#fff" stroke-opacity=".14"/><path d="M19 20h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/><path d="M45 20 19 44" stroke="#FF4D45" stroke-width="7" stroke-linecap="round"/><path d="M19 44h26" stroke="#2BD27F" stroke-width="7" stroke-linecap="round"/></svg></i>zwallet</span><button class="onb-skip" type="button" data-onb="skip">Omitir tutorial</button></div>' +
+    el.innerHTML = '<div class="onb-in"><div class="onb-top"><span class="onb-brand"><i class="logo" aria-hidden="true"><img src="icons/icon-192.png" alt="" width="34" height="34"></i>zwallet</span><button class="onb-skip" type="button" data-onb="skip">Omitir tutorial</button></div>' +
       '<div class="onb-prog" role="img" aria-label="Paso ' + (i + 1) + " de " + n + '">' + ONB.map(function (x, k) { return '<span class="' + (k < i ? "done" : k === i ? "cur" : "") + '"></span>'; }).join("") + "</div>" +
       '<p class="onb-k">' + esc(s.k) + " · " + (i + 1) + " de " + n + '</p><h2 id="onb-t" tabindex="-1">' + esc(s.t) + '</h2><p class="onb-p">' + esc(s.p) + "</p>" +
       (s.pts ? '<ul class="onb-pts">' + s.pts.map(function (x) { return "<li>" + chk + "<span>" + esc(x) + "</span></li>"; }).join("") + "</ul>" : "") +

@@ -75,6 +75,12 @@ function manejar_(p) {
       var txt = '### Sheet Name: ' + tab.getName() + '\n' + vals.map(function (r) { return '| ' + r.join(' | ') + ' |'; }).join('\n') + '\n';
       diag_('read', 'ok', tab.getName() + ' · ' + vals.length + ' filas'); return { ok: true, name: tab.getName(), text: txt };
     }
+    if (a === 'notify') {
+      var to = (p.to || []).filter(function (m) { return /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(m); }).slice(0, 5);
+      if (!to.length) { diag_('notify', 'error', 'Sin destinatarios'); return { ok: false, err: 'sin_destino' }; }
+      MailApp.sendEmail({ to: to.join(','), subject: String(p.subject || 'zwallet').slice(0, 150), body: String(p.body || '').slice(0, 3000), name: 'zwallet' });
+      diag_('notify', 'ok', String(p.subject || '').slice(0, 120) + ' → ' + to.join(', ')); return { ok: true };
+    }
     if (a === 'write') return escribirMes_(ss, cfg, p);
     if (a === 'config') { diag_('config', 'ok', 'Configuración leída'); return { ok: true, config: cfg.app, url: ss.getUrl() }; }
     if (a === 'setconfig') { escribirConfig_(cfgSh, { app: p.config }, cfg.conn); diag_('setconfig', 'ok', 'Configuración guardada desde la app'); return { ok: true }; }

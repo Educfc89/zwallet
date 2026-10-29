@@ -4,7 +4,7 @@ service cloud.firestore {
     // Solo entran Eduardo y Zaydi (correos ya verificados por Google/Firebase al iniciar sesión).
     function permitido() {
       return request.auth != null
-        && request.auth.token.email in ["eduardocarpio89@gmail.com", "CORREO_DE_ZAYDI@gmail.com"];
+        && request.auth.token.email in ["eduardocarpio89@gmail.com", "zhernandez0190@gmail.com"];
     }
     match /{document=**} {
       allow read, write: if permitido();

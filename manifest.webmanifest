@@ -1,30 +1,31 @@
 {
-  "id": "/zwallet/",
-  "name": "zwallet",
-  "short_name": "zwallet",
-  "lang": "es",
-  "start_url": "/zwallet/?app=zwallet",
-  "scope": "/zwallet/",
-  "display": "standalone",
-  "orientation": "portrait",
-  "background_color": "#0B0F0E",
-  "theme_color": "#0B0F0E",
-  "icons": [
-    {
-      "src": "icons/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
-  ]
+ "id": "zwallet-real",
+ "name": "zwallet",
+ "short_name": "zwallet",
+ "description": "Gastos de la casa, compartidos.",
+ "start_url": "./",
+ "scope": "./",
+ "display": "standalone",
+ "orientation": "portrait",
+ "background_color": "#0A0A0D",
+ "theme_color": "#0A0A0D",
+ "lang": "es",
+ "icons": [
+  {
+   "src": "icons/icon-192.png",
+   "sizes": "192x192",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/icon-512.png",
+   "sizes": "512x512",
+   "type": "image/png"
+  },
+  {
+   "src": "icons/maskable-512.png",
+   "sizes": "512x512",
+   "type": "image/png",
+   "purpose": "maskable"
+  }
+ ]
 }

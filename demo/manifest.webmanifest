@@ -1,4 +1,5 @@
 {
+ "id": "zwallet-demo",
  "name": "zwallet Demo",
  "short_name": "zw Demo",
  "description": "Gastos de la casa, compartidos.",
@@ -6,8 +7,8 @@
  "scope": "./",
  "display": "standalone",
  "orientation": "portrait",
- "background_color": "#0B0F0E",
- "theme_color": "#0B0F0E",
+ "background_color": "#0A0A0D",
+ "theme_color": "#0A0A0D",
  "lang": "es",
  "icons": [
   {
